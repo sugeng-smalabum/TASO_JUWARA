@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tahu Bakso Djuara - Kuliner Khas Surabaya</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in {
+            animation: fadeIn 1s ease-out;
+        }
+        .hover-scale:hover {
+            transform: translateY(-8px);
+        }
+        .hover-scale {
+            transition: all 0.3s ease;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-orange-50 via-white to-amber-50">
+    
+    <!-- Admin Button -->
+    <button onclick="toggleAdmin()" id="adminBtn" class="fixed top-4 right-4 z-50 bg-gray-800 text-white p-3 rounded-full shadow-lg hover:bg-gray-700 transition-all">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M12 1v6m0 6v6m-6-6h6m0 0h6"></path>
+        </svg>
+    </button>
+
+    <!-- Admin Login Modal -->
+    <div id="adminLoginModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-2xl p-8 max-w-md w-full">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold">Login Admin</h2>
+                <button onclick="closeAdminLogin()" class="text-gray-500 hover:text-gray-700">✕</button>
+            </div>
+            <input type="text" id="adminUsername" placeholder="Username" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg mb-4">
+            <input type="password" id="adminPassword" placeholder="Password" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg mb-4" onkeypress="if(event.key==='Enter') loginAdmin()">
+            <button onclick="loginAdmin()" class="w-full bg-orange-500 text-white py-3 rounded-lg font-semibold hover:bg-orange-600">
+                Login
+            </button>
+            <div class="mt-6 p-4 bg-blue-50 rounded-lg">
+                <p class="text-sm font-semibold text-gray-700 mb-2">ℹ️ Petunjuk Admin:</p>
+                <p class="text-xs text-gray-600">Hubungi pemilik toko untuk mendapatkan akses admin</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Business Info Modal -->
+    <div id="editInfoModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-2xl p-8 max-w-md w-full">
+            <h2 class="text-2xl font-bold mb-4">Edit Info Bisnis</h2>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-semibold mb-2">Tagline</label>
+                    <input type="text" id="editTagline" class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold mb-2">Rating</label>
+                    <input type="text" id="editRating" class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold mb-2">Deskripsi</label>
+                    <textarea id="editDescription" class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg" rows="3"></textarea>
+                </div>
+            </div>
+            <div class="flex gap-3 mt-6">
+                <button onclick="saveBusinessInfo()" class="flex-1 bg-orange-500 text-white py-3 rounded-lg font-semibold hover:bg-orange-600">
+                    Simpan
+                </button>
+                <button onclick="closeEditInfo()" class="flex-1 bg-gray-300 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-400">
+                    Batal
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Product Modal -->
+    <div id="productModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 overflow-y-auto">
+        <div class="bg-white rounded-2xl p-8 max-w-2xl w-full my-8">
+            <h2 id="productModalTitle" class="text-2xl font-bold mb-6">Edit Produk</h2>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-semibold mb-2">Nama Produk</label>
+                    <input type="text" id="productName" class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold mb-2">Harga (Rp)</label>
+                    <input type="number" id="productPrice" class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold mb-2">URL Gambar</label>
+                    <input type="text" id="productImage" class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold mb-2">Deskripsi</label>
+                    <textarea id="productDescription" class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg" rows="3"></textarea>
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold mb-2">Kategori</label>
+                    <select id="productCategory" class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg">
+                        <option value="signature">Signature</option>
+                        <option value="bakery">Bakery</option>
+                    </select>
+                </div>
+            </div>
+            <div class="flex gap-3 mt-6">
+                <button onclick="saveProduct()" class="flex-1 bg-orange-500 text-white py-3 rounded-lg font-semibold hover:bg-orange-600">
+                    Simpan
+                </button>
+                <button onclick="closeProductModal()" class="flex-1 bg-gray-300 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-400">
+                    Batal
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Branch Modal -->
+    <div id="branchModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-2xl p-8 max-w-md w-full">
+            <h2 id="branchModalTitle" class="text-2xl font-bold mb-6">Edit Cabang</h2>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-semibold mb-2">Nama Cabang</label>
+                    <input type="text" id="branchName" class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold mb-2">Alamat</label>
+                    <input type="text" id="branchAddress" class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold mb-2">Telepon</label>
+                    <input type="text" id="branchPhone" class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold mb-2">Jam Operasional</label>
+                    <input type="text" id="branchHours" class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg">
+                </div>
+            </div>
+            <div class="flex gap-3 mt-6">
+                <button onclick="saveBranch()" class="flex-1 bg-orange-500 text-white py-3 rounded-lg font-semibold hover:bg-orange-600">
+                    Simpan
+                </button>
+                <button onclick="closeBranchModal()" class="flex-1 bg-gray-300 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-400">
+                    Batal
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <div class="relative overflow-hidden bg-gradient-to-r from-orange-600 to-amber-500 text-white">
+        <div class="absolute inset-0 bg-black opacity-10"></div>
+        <div class="relative max-w-7xl mx-auto px-4 py-20 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <button id="editInfoBtn" onclick="openEditInfo()" class="hidden mb-4 bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full text-sm mx-auto">
+                    ✏️ Edit Info Bisnis
+                </button>
+                <h1 class="text-5xl md:text-7xl font-bold mb-4 animate-fade-in">
+                    Tahu Bakso <span class="text-yellow-300">Djuara</span>
+                </h1>
+                <p id="taglineText" class="text-xl md:text-2xl mb-8 text-orange-100">
+                    Juara Rasa, Juara Hati - Kuliner Khas Surabaya
+                </p>
+                <div class="flex flex-wrap justify-center gap-4 text-sm">
+                    <div class="flex items-center gap-2 bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full">
+                        <span>⭐</span>
+                        <span id="ratingText">Rating 4.9/5</span>
+                    </div>
+                    <div class="flex items-center gap-2 bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full">
+                        <span>🕐</span>
+                        <span>Buka 08:00 - 21:00</span>
+                    </div>
+                    <div class="flex items-center gap-2 bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full">
+                        <span>📍</span>
+                        <span>Surabaya, Jawa Timur</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-orange-50"></div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 py-16 sm:px-6 lg:px-8">
+        
+        <!-- Signature Products -->
+        <div class="mb-16">
+            <div class="flex items-center justify-between mb-8">
+                <div class="flex items-center gap-3">
+                    <div class="h-1 w-12 bg-gradient-to-r from-orange-500 to-amber-500 rounded"></div>
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-800">Menu Signature</h2>
+                </div>
+                <button id="addProductBtn1" onclick="openAddProduct('signature')" class="hidden bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600">
+                    ➕ Tambah Produk
+                </button>
+            </div>
+            <div id="signatureProducts" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
+        </div>
+
+        <!-- Bakery Products -->
+        <div class="mb-16">
+            <div class="flex items-center justify-between mb-8">
+                <div class="flex items-center gap-3">
+                    <div class="h-1 w-12 bg-gradient-to-r from-amber-500 to-yellow-500 rounded"></div>
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-800">Menu Bakery</h2>
+                </div>
+                <button id="addProductBtn2" onclick="openAddProduct('bakery')" class="hidden bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600">
+                    ➕ Tambah Produk
+                </button>
+            </div>
+            <div id="bakeryProducts" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
+        </div>
+
+        <!-- Branches -->
+        <div>
+            <div class="flex items-center justify-between mb-8">
+                <div class="flex items-center gap-3">
+                    <div class="h-1 w-12 bg-gradient-to-r from-orange-500 to-amber-500 rounded"></div>
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-800">Kantor Cabang</h2>
+                </div>
+                <button id="addBranchBtn" onclick="openAddBranch()" class="hidden bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600">
+                    ➕ Tambah Cabang
+                </button>
+            </div>
+            <div id="branchesList" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
+        </div>
+    </div>
+
+    <!-- Floating Cart -->
+    <div id="floatingCart" class="hidden fixed bottom-6 right-6 bg-white rounded-2xl shadow-2xl p-6 max-w-md w-full mx-4 border-2 border-orange-200 z-40">
+        <div class="flex items-center justify-between mb-4">
+            <h3 class="text-xl font-bold text-gray-800 flex items-center gap-2">
+                🛒 Keranjang (<span id="cartCount">0</span>)
+            </h3>
+        </div>
+        <div id="cartItems" class="max-h-60 overflow-y-auto mb-4 space-y-3"></div>
+        <div class="border-t-2 border-orange-200 pt-4 mb-4">
+            <div class="flex justify-between items-center text-xl font-bold">
+                <span>Total:</span>
+                <span class="text-orange-600" id="cartTotal">Rp 0</span>
+            </div>
+        </div>
+        <button onclick="sendWhatsAppOrder()" class="w-full bg-gradient-to-r from-green-500 to-green-600 text-white py-4 rounded-xl font-bold text-lg hover:from-green-600 hover:to-green-700 transition-all duration-300 flex items-center justify-center gap-3 shadow-lg">
+            📱 Pesan via WhatsApp
+        </button>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gradient-to-r from-gray-800 to-gray-900 text-white py-12 mt-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div>
+                    <h3 class="text-2xl font-bold mb-4 text-orange-400">Tahu Bakso Djuara</h3>
+                    <p id="footerDescription" class="text-gray-300">Kuliner terbaik dengan cita rasa juara untuk keluarga Indonesia</p>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Kontak</h4>
+                    <div class="space-y-2 text-gray-300">
+                        <p>📞 0821-4278-1714</p>
+                        <p>📍 Surabaya, Jawa Timur</p>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Jam Operasional</h4>
+                    <p class="text-gray-300">Setiap Hari<br>08:00 - 21:00 WIB</p>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
+                <p>© 2024 Tahu Bakso Djuara. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Admin Credentials - HASHED dengan SHA-256
+        // PENTING: Ganti hash ini dengan password Anda sendiri!
+        // Cara membuat hash: buka https://emn178.github.io/online-tools/sha256.html
+        // Ketik password Anda, copy hash yang dihasilkan, dan ganti nilai di bawah ini
+        
+        const adminAccounts = {
+            // Username: SHA-256 Hash dari Password
+            // Default: sugengm / BATAVIAs228
+            'sugengm': 'a2eada7e067cf678b9608aca4bdb9c1c97dc8cb15a1ab566965b6767c176efd3',
+            // owner / ownerpass123
+            'owner': 'b4e6e1c6d4d5b8c9e8c3d8c1a4c3f7e2d4e9b6f8c5d3e2f9a7b6c8d9e2f3a4b5',
+            // Tambahkan admin lain di sini dengan format:
+            // 'username': 'hash_password_sha256',
+        };
+
+        // Fungsi untuk hash password (SHA-256)
+        async function hashPassword(password) {
+            const msgBuffer = new TextEncoder().encode(password);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+            return hashHex;
+        }
+
+        // Data Storage
+        let isAdmin = false;
+        let currentAdminUsername = '';
+        let cart = [];
+        let currentEditProduct = null;
+        let currentEditBranch = null;
+        let isAddingNew = false;
+        
+        const defaultProducts = [
+            { id: 1, name: 'Tahu Bakso Original', price: 15000, image: 'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=400&h=300&fit=crop', description: 'Tahu lembut diisi bakso pilihan dengan bumbu rahasia', category: 'signature' },
+            { id: 2, name: 'Tahu Bakso Pedas', price: 17000, image: 'https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?w=400&h=300&fit=crop', description: 'Sensasi pedas menggigit untuk pecinta kuliner pedas', category: 'signature' },
+            { id: 3, name: 'Tahu Bakso Jumbo', price: 25000, image: 'https://images.unsplash.com/photo-1563245372-f21724e3856d?w=400&h=300&fit=crop', description: 'Porsi besar untuk perut lapar, isi berlimpah', category: 'signature' },
+            { id: 4, name: 'Roti Sobek Coklat', price: 20000, image: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=400&h=300&fit=crop', description: 'Roti lembut dengan topping coklat melimpah', category: 'bakery' },
+            { id: 5, name: 'Croissant Butter', price: 18000, image: 'https://images.unsplash.com/photo-1555507036-ab1f4038808a?w=400&h=300&fit=crop', description: 'Croissant berlapis dengan butter premium', category: 'bakery' },
+            { id: 6, name: 'Roti Abon', price: 15000, image: 'https://images.unsplash.com/photo-1608198093002-ad4e005484ec?w=400&h=300&fit=crop', description: 'Roti empuk dengan abon sapi berkualitas', category: 'bakery' }
+        ];
+
+        const defaultBranches = [
+            { id: 1, name: 'Cabang Surabaya Pusat', address: 'Jl. Pemuda No. 123, Surabaya', phone: '0821-4278-1714', hours: '08:00 - 21:00' },
+            { id: 2, name: 'Cabang Sidoarjo', address: 'Jl. Raya Buduran No. 45, Sidoarjo', phone: '0821-4278-1715', hours: '08:00 - 21:00' }
+        ];
+
+        const defaultBusinessInfo = {
+            tagline: 'Juara Rasa, Juara Hati - Kuliner Khas Surabaya',
+            rating: '4.9/5',
+            description: 'Kuliner terbaik dengan cita rasa juara untuk keluarga Indonesia'
+        };
+
+        let products = JSON.parse(localStorage.getItem('tahu-bakso-products')) || defaultProducts;
+        let branches = JSON.parse(localStorage.getItem('tahu-bakso-branches')) || defaultBranches;
+        let businessInfo = JSON.parse(localStorage.getItem('tahu-bakso-info')) || defaultBusinessInfo;
+
+        // Initialize
+        function init() {
+            renderProducts();
+            renderBranches();
+            updateBusinessInfo();
+            updateCart();
+        }
+
+        // Admin Functions
+        function toggleAdmin() {
+            if (isAdmin) {
+                logout();
+            } else {
+                document.getElementById('adminLoginModal').classList.remove('hidden');
+            }
+        }
+
+        function closeAdminLogin() {
+            document.getElementById('adminLoginModal').classList.add('hidden');
+            document.getElementById('adminUsername').value = '';
+            document.getElementById('adminPassword').value = '';
+        }
+
+        async function loginAdmin() {
+            const username = document.getElementById('adminUsername').value.trim();
+            const password = document.getElementById('adminPassword').value;
+            
+            if (!username || !password) {
+                alert('Username dan password harus diisi!');
+                return;
+            }
+
+            // Hash password yang diinput
+            const hashedPassword = await hashPassword(password);
+            
+            // Cek apakah username ada dan password cocok
+            if (adminAccounts[username] && adminAccounts[username] === hashedPassword) {
+                isAdmin = true;
+                currentAdminUsername = username;
+                document.getElementById('adminLoginModal').classList.add('hidden');
+                document.getElementById('adminUsername').value = '';
+                document.getElementById('adminPassword').value = '';
+                document.getElementById('adminBtn').innerHTML = '👤 ' + username + ' (Logout)';
+                showAdminButtons();
+                renderProducts();
+                renderBranches();
+                
+                // Tampilkan pesan selamat datang
+                alert('Selamat datang, ' + username + '! 👋');
+            } else {
+                alert('Username atau password salah! ❌');
+            }
+        }
+
+        function logout() {
+            if (confirm('Yakin ingin logout?')) {
+                isAdmin = false;
+                currentAdminUsername = '';
+                document.getElementById('adminBtn').innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M12 1v6m0 6v6m-6-6h6m0 0h6"></path></svg>';
+                hideAdminButtons();
+                renderProducts();
+                renderBranches();
+            }
+        }
+
+        function showAdminButtons() {
+            document.getElementById('editInfoBtn').classList.remove('hidden');
+            document.getElementById('addProductBtn1').classList.remove('hidden');
+            document.getElementById('addProductBtn2').classList.remove('hidden');
+            document.getElementById('addBranchBtn').classList.remove('hidden');
+        }
+
+        function hideAdminButtons() {
+            document.getElementById('editInfoBtn').classList.add('hidden');
+            document.getElementById('addProductBtn1').classList.add('hidden');
+            document.getElementById('addProductBtn2').classList.add('hidden');
+            document.getElementById('addBranchBtn').classList.add('hidden');
+        }
+
+        // Business Info Functions
+        function openEditInfo() {
+            document.getElementById('editTagline').value = businessInfo.tagline;
+            document.getElementById('editRating').value = businessInfo.rating;
+            document.getElementById('editDescription').value = businessInfo.description;
+            document.getElementById('editInfoModal').classList.remove('hidden');
+        }
+
+        function closeEditInfo() {
+            document.getElementById('editInfoModal').classList.add('hidden');
+        }
+
+        function saveBusinessInfo() {
+            businessInfo = {
+                tagline: document.getElementById('editTagline').value,
+                rating: document.getElementById('editRating').value,
+                description: document.getElementById('editDescription').value
+            };
+            localStorage.setItem('tahu-bakso-info', JSON.stringify(businessInfo));
+            updateBusinessInfo();
+            closeEditInfo();
+        }
+
+        function updateBusinessInfo() {
+            document.getElementById('taglineText').textContent = businessInfo.tagline;
+            document.getElementById('ratingText').textContent = 'Rating ' + businessInfo.rating;
+            document.getElementById('footerDescription').textContent = businessInfo.description;
+        }
+
+        // Product Functions
+        function renderProducts() {
+            const signatureContainer = document.getElementById('signatureProducts');
+            const bakeryContainer = document.getElementById('bakeryProducts');
+            
+            signatureContainer.innerHTML = '';
+            bakeryContainer.innerHTML = '';
+
+            products.forEach(product => {
+                const card = createProductCard(product);
+                if (product.category === 'signature') {
+                    signatureContainer.innerHTML += card;
+                } else {
+                    bakeryContainer.innerHTML += card;
+                }
+            });
+        }
+
+        function createProductCard(product) {
+            const adminButtons = isAdmin ? `
+                <div class="absolute top-4 left-4 flex gap-2">
+                    <button onclick="editProduct(${product.id})" class="bg-blue-500 text-white p-2 rounded-full hover:bg-blue-600">
+                        ✏️
+                    </button>
+                    <button onclick="deleteProduct(${product.id})" class="bg-red-500 text-white p-2 rounded-full hover:bg-red-600">
+                        🗑️
+                    </button>
+                </div>
+            ` : '';
+
+            const badgeColor = product.category === 'signature' ? 'bg-orange-500' : 'bg-amber-500';
+            const badgeText = product.category === 'signature' ? 'Best Seller' : 'Fresh Daily';
+            const buttonColor = product.category === 'signature' ? 'from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600' : 'from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600';
+
+            return `
+                <div class="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden hover-scale">
+                    <div class="relative overflow-hidden h-56">
+                        <img src="${product.image}" alt="${product.name}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                        <div class="absolute top-4 right-4 ${badgeColor} text-white px-3 py-1 rounded-full text-sm font-semibold">
+                            ${badgeText}
+                        </div>
+                        ${adminButtons}
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-gray-800 mb-2">${product.name}</h3>
+                        <p class="text-gray-600 text-sm mb-4">${product.description}</p>
+                        <div class="flex items-center justify-between">
+                            <span class="text-2xl font-bold text-orange-600">
+                                Rp ${product.price.toLocaleString('id-ID')}
+                            </span>
+                            <button onclick="addToCart(${product.id})" class="bg-gradient-to-r ${buttonColor} text-white px-6 py-2 rounded-full font-semibold transition-all duration-300 flex items-center gap-2">
+                                Pesan →
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function openAddProduct(category) {
+            isAddingNew = true;
+            currentEditProduct = { id: Date.now(), name: '', price: 0, image: '', description: '', category: category };
+            document.getElementById('productModalTitle').textContent = 'Tambah Produk Baru';
+            document.getElementById('productName').value = '';
+            document.getElementById('productPrice').value = '';
+            document.getElementById('productImage').value = '';
+            document.getElementById('productDescription').value = '';
+            document.getElementById('productCategory').value = category;
+            document.getElementById('productModal').classList.remove('hidden');
+        }
+
+        function editProduct(id) {
+            isAddingNew = false;
+            currentEditProduct = products.find(p => p.id === id);
+            document.getElementById('productModalTitle').textContent = 'Edit Produk';
+            document.getElementById('productName').value = currentEditProduct.name;
+            document.getElementById('productPrice').value = currentEditProduct.price;
+            document.getElementById('productImage').value = currentEditProduct.image;
+            document.getElementById('productDescription').value = currentEditProduct.description;
+            document.getElementById('productCategory').value = currentEditProduct.category;
+            document.getElementById('productModal').classList.remove('hidden');
+        }
+
+        function saveProduct() {
+            const updatedProduct = {
+                id: currentEditProduct.id,
+                name: document.getElementById('productName').value,
+                price: parseInt(document.getElementById('productPrice').value),
+                image: document.getElementById('productImage').value,
+                description: document.getElementById('productDescription').value,
+                category: document.getElementById('productCategory').value
+            };
+
+            if (isAddingNew) {
+                products.push(updatedProduct);
+            } else {
+                const index = products.findIndex(p => p.id === currentEditProduct.id);
+                products[index] = updatedProduct;
+            }
+
+            localStorage.setItem('tahu-bakso-products', JSON.stringify(products));
+            renderProducts();
+            closeProductModal();
+        }
+
+        function deleteProduct(id) {
+            if (confirm('Yakin ingin menghapus produk ini?')) {
+                products = products.filter(p => p.id !== id);
+                localStorage.setItem('tahu-bakso-products', JSON.stringify(products));
+                renderProducts();
+            }
+        }
+
+        function closeProductModal() {
+            document.getElementById('productModal').classList.add('hidden');
+        }
+
+        // Branch Functions
+        function renderBranches() {
+            const container = document.getElementById('branchesList');
+            container.innerHTML = '';
+
+            branches.forEach(branch => {
+                container.innerHTML += createBranchCard(branch);
+            });
+        }
+
+        function createBranchCard(branch) {
+            const adminButtons = isAdmin ? `
+                <div class="absolute top-4 left-4 flex gap-2">
+                    <button onclick="editBranch(${branch.id})" class="bg-blue-500 text-white p-2 rounded-full hover:bg-blue-600">
+                        ✏️
+                    </button>
+                    <button onclick="deleteBranch(${branch.id})" class="bg-red-500 text-white p-2 rounded-full hover:bg-red-600">
+                        🗑️
+                    </button>
+                </div>
+            ` : '';
+
+            return `
+                <div class="relative bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl transition-all">
+                    ${adminButtons}
+                    <h3 class="text-xl font-bold text-gray-800 mb-4 ${isAdmin ? 'mt-8' : ''}">${branch.name}</h3>
+                    <div class="space-y-2 text-gray-600">
+                        <p>📍 ${branch.address}</p>
+                        <p>📞 ${branch.phone}</p>
+                        <p>🕐 ${branch.hours}</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        function openAddBranch() {
+            isAddingNew = true;
+            currentEditBranch = { id: Date.now(), name: '', address: '', phone: '', hours: '08:00 - 21:00' };
+            document.getElementById('branchModalTitle').textContent = 'Tambah Cabang Baru';
+            document.getElementById('branchName').value = '';
+            document.getElementById('branchAddress').value = '';
+            document.getElementById('branchPhone').value = '';
+            document.getElementById('branchHours').value = '08:00 - 21:00';
+            document.getElementById('branchModal').classList.remove('hidden');
+        }
+
+        function editBranch(id) {
+            isAddingNew = false;
+            currentEditBranch = branches.find(b => b.id === id);
+            document.getElementById('branchModalTitle').textContent = 'Edit Cabang';
+            document.getElementById('branchName').value = currentEditBranch.name;
+            document.getElementById('branchAddress').value = currentEditBranch.address;
+            document.getElementById('branchPhone').value = currentEditBranch.phone;
+            document.getElementById('branchHours').value = currentEditBranch.hours;
+            document.getElementById('branchModal').classList.remove('hidden');
+        }
+
+        function saveBranch() {
+            const updatedBranch = {
+                id: currentEditBranch.id,
+                name: document.getElementById('branchName').value,
+                address: document.getElementById('branchAddress').value,
+                phone: document.getElementById('branchPhone').value,
+                hours: document.getElementById('branchHours').value
+            };
+
+            if (isAddingNew) {
+                branches.push(updatedBranch);
+            } else {
+                const index = branches.findIndex(b => b.id === currentEditBranch.id);
+                branches[index] = updatedBranch;
+            }
+
+            localStorage.setItem('tahu-bakso-branches', JSON.stringify(branches));
+            renderBranches();
+            closeBranchModal();
+        }
+
+        function deleteBranch(id) {
+            if (confirm('Yakin ingin menghapus cabang ini?')) {
+                branches = branches.filter(b => b.id !== id);
+                localStorage.setItem('tahu-bakso-branches', JSON.stringify(branches));
+                renderBranches();
+            }
+        }
+
+        function closeBranchModal() {
+            document.getElementById('branchModal').classList.add('hidden');
+        }
+
+        // Cart Functions
+        function addToCart(productId) {
+            const product = products.find(p => p.id === productId);
+            const existingItem = cart.find(item => item.id === productId);
+
+            if (existingItem) {
+                existingItem.qty++;
+            } else {
+                cart.push({ ...product, qty: 1 });
+            }
+
+            updateCart();
+        }
+
+        function updateQty(productId, delta) {
+            const item = cart.find(item => item.id === productId);
+            if (item) {
+                item.qty += delta;
+                if (item.qty <= 0) {
+                    cart = cart.filter(item => item.id !== productId);
+                }
+            }
+            updateCart();
+        }
+
+        function updateCart() {
+            const cartContainer = document.getElementById('cartItems');
+            const floatingCart = document.getElementById('floatingCart');
+            
+            if (cart.length === 0) {
+                floatingCart.classList.add('hidden');
+                return;
+            }
+
+            floatingCart.classList.remove('hidden');
+            document.getElementById('cartCount').textContent = cart.length;
+
+            let total = 0;
+            cartContainer.innerHTML = '';
+
+            cart.forEach(item => {
+                total += item.price * item.qty;
+                cartContainer.innerHTML += `
+                    <div class="flex items-center justify-between bg-orange-50 p-3 rounded-lg">
+                        <div class="flex-1">
+                            <p class="font-semibold text-gray-800">${item.name}</p>
+                            <p class="text-sm text-gray-600">Rp ${item.price.toLocaleString('id-ID')}</p>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button onclick="updateQty(${item.id}, -1)" class="w-8 h-8 bg-white rounded-full font-bold text-orange-500 hover:bg-orange-100">
+                                -
+                            </button>
+                            <span class="w-8 text-center font-bold">${item.qty}</span>
+                            <button onclick="updateQty(${item.id}, 1)" class="w-8 h-8 bg-white rounded-full font-bold text-orange-500 hover:bg-orange-100">
+                                +
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            document.getElementById('cartTotal').textContent = 'Rp ' + total.toLocaleString('id-ID');
+        }
+
+        function sendWhatsAppOrder() {
+            if (cart.length === 0) {
+                alert('Keranjang masih kosong!');
+                return;
+            }
+
+            let message = '*PESANAN BARU - Tahu Bakso Djuara*%0A%0A';
+            let total = 0;
+
+            cart.forEach(item => {
+                const itemTotal = item.price * item.qty;
+                total += itemTotal;
+                message += `• ${item.name}%0A  ${item.qty}x @ Rp ${item.price.toLocaleString('id-ID')} = Rp ${itemTotal.toLocaleString('id-ID')}%0A%0A`;
+            });
+
+            message += `*Total: Rp ${total.toLocaleString('id-ID')}*%0A%0A`;
+            message += 'Terima kasih! 🙏';
+
+            window.open(`https://wa.me/6282142781714?text=${message}`, '_blank');
+        }
+
+        // Initialize on load
+        window.onload = init;
+    </script>
+</body>
+</html>
