@@ -778,47 +778,50 @@
     </div>
 
     <!-- Floating Cart -->
-    <div id="floatingCart" class="hidden fixed bottom-6 right-6 bg-white rounded-2xl shadow-2xl p-6 max-w-md w-full mx-4 border-2 border-orange-200 z-40 max-h-[85vh] overflow-y-auto">
-        <div class="flex items-center justify-between mb-4">
-            <h3 class="text-xl font-bold text-gray-800 flex items-center gap-2">
+    <div id="floatingCart" class="hidden fixed bottom-0 left-0 right-0 md:bottom-6 md:left-6 md:right-auto bg-white md:rounded-2xl rounded-t-2xl shadow-2xl p-4 md:p-6 md:max-w-md w-full md:mx-4 border-2 border-orange-200 z-40 max-h-[90vh] md:max-h-[85vh] overflow-y-auto">
+        <div class="flex items-center justify-between mb-4 sticky top-0 bg-white pb-2 border-b-2 border-orange-100">
+            <h3 class="text-lg md:text-xl font-bold text-gray-800 flex items-center gap-2">
                 🛒 Keranjang (<span id="cartCount">0</span>)
             </h3>
+            <button onclick="closeCart()" class="md:hidden text-gray-500 hover:text-gray-700 text-2xl font-bold w-8 h-8 flex items-center justify-center">
+                ✕
+            </button>
         </div>
         
         <!-- Cart Items -->
-        <div id="cartItems" class="max-h-48 overflow-y-auto mb-4 space-y-3"></div>
+        <div id="cartItems" class="max-h-40 md:max-h-48 overflow-y-auto mb-4 space-y-3"></div>
         
         <!-- Shipping Address Selection -->
         <div class="border-t-2 border-orange-200 pt-4 mb-4">
-            <h4 class="font-bold text-gray-700 mb-3 flex items-center gap-2">
+            <h4 class="font-bold text-gray-700 mb-3 flex items-center gap-2 text-sm md:text-base">
                 📍 Alamat Pengiriman
             </h4>
             
             <!-- Province Selection -->
             <div class="mb-3">
-                <label class="block text-sm font-semibold text-gray-600 mb-2">Provinsi</label>
+                <label class="block text-xs md:text-sm font-semibold text-gray-600 mb-2">Provinsi</label>
                 <select id="cartProvinceSelect" onchange="loadCartCities()"
-                    class="w-full px-3 py-2 border-2 border-orange-300 rounded-lg text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-orange-200 focus:border-orange-500 transition">
+                    class="w-full px-3 py-2 border-2 border-orange-300 rounded-lg text-xs md:text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-orange-200 focus:border-orange-500 transition">
                     <option value="">-- Pilih Provinsi --</option>
                 </select>
             </div>
             
             <!-- City Selection -->
             <div class="mb-3" id="cartCityContainer" style="display: none;">
-                <label class="block text-sm font-semibold text-gray-600 mb-2">Kota/Kabupaten</label>
+                <label class="block text-xs md:text-sm font-semibold text-gray-600 mb-2">Kota/Kabupaten</label>
                 <select id="cartCitySelect" onchange="updateCartWithShipping()"
-                    class="w-full px-3 py-2 border-2 border-orange-300 rounded-lg text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-orange-200 focus:border-orange-500 transition">
+                    class="w-full px-3 py-2 border-2 border-orange-300 rounded-lg text-xs md:text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-orange-200 focus:border-orange-500 transition">
                     <option value="">-- Pilih Kota --</option>
                 </select>
             </div>
             
             <!-- Shipping Info Display -->
             <div id="shippingInfo" class="hidden mt-3 bg-green-50 border-2 border-green-300 rounded-lg p-3">
-                <div class="flex items-center justify-between text-sm mb-2">
+                <div class="flex items-center justify-between text-xs md:text-sm mb-2">
                     <span class="text-gray-600">📦 Berat Total:</span>
                     <span class="font-bold text-gray-800" id="totalWeightDisplay">0 kg</span>
                 </div>
-                <div class="flex items-center justify-between text-sm">
+                <div class="flex items-center justify-between text-xs md:text-sm">
                     <span class="text-gray-600">⏱️ Estimasi:</span>
                     <span class="font-bold text-gray-800" id="estimateDisplay">-</span>
                 </div>
@@ -826,141 +829,149 @@
         </div>
         
         <!-- Price Summary -->
-        <div class="border-t-2 border-orange-200 pt-4 mb-4 space-y-3">
-            <div class="flex justify-between items-center text-base">
+        <div class="border-t-2 border-orange-200 pt-4 mb-4 space-y-2 md:space-y-3">
+            <div class="flex justify-between items-center text-sm md:text-base">
                 <span class="text-gray-700">Harga Produk:</span>
                 <span class="font-bold text-gray-800" id="cartSubtotal">Rp 0</span>
             </div>
             
-            <div class="flex justify-between items-center text-base">
+            <div class="flex justify-between items-center text-sm md:text-base">
                 <span class="text-gray-700">Ongkos Kirim:</span>
                 <span class="font-bold text-orange-600" id="cartShippingCost">Rp 0</span>
             </div>
             
-            <div class="border-t-2 border-orange-300 pt-3">
-                <div class="flex justify-between items-center text-xl">
+            <div class="border-t-2 border-orange-300 pt-2 md:pt-3">
+                <div class="flex justify-between items-center text-lg md:text-xl">
                     <span class="font-bold text-gray-800">Total Bayar:</span>
                     <span class="font-bold text-green-600" id="cartTotal">Rp 0</span>
                 </div>
             </div>
         </div>
         
-        <button onclick="sendWhatsAppOrder()" class="w-full bg-gradient-to-r from-green-500 to-green-600 text-white py-4 rounded-xl font-bold text-lg hover:from-green-600 hover:to-green-700 transition-all duration-300 flex items-center justify-center gap-3 shadow-lg">
+        <button onclick="sendWhatsAppOrder()" class="w-full bg-gradient-to-r from-green-500 to-green-600 text-white py-3 md:py-4 rounded-xl font-bold text-base md:text-lg hover:from-green-600 hover:to-green-700 transition-all duration-300 flex items-center justify-center gap-2 md:gap-3 shadow-lg">
             📱 Pesan via WhatsApp
         </button>
     </div>
+    
+    <!-- Mobile Cart Toggle Button (KIRI - hanya muncul di mobile ketika ada item) -->
+    <button id="mobileCartToggle" onclick="toggleCart()" class="md:hidden hidden fixed bottom-4 left-4 bg-orange-500 text-white rounded-full w-16 h-16 flex items-center justify-center shadow-2xl z-50 hover:bg-orange-600 transition-all duration-300">
+        <div class="relative">
+            <span class="text-2xl">🛒</span>
+            <span id="mobileCartBadge" class="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center animate-pulse">0</span>
+        </div>
+    </button>
 
     <!-- Kalkulator Ongkos Kirim -->
-    <section class="py-20 bg-gradient-to-br from-orange-50 via-white to-amber-50 mt-20">
-        <div class="container mx-auto px-6 max-w-7xl">
-            <div class="text-center mb-12 animate-fade-in">
-                <h2 class="text-4xl md:text-5xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-amber-500">
+    <section class="py-12 md:py-20 bg-gradient-to-br from-orange-50 via-white to-amber-50 mt-12 md:mt-20">
+        <div class="container mx-auto px-4 md:px-6 max-w-7xl">
+            <div class="text-center mb-8 md:mb-12 animate-fade-in">
+                <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold mb-3 md:mb-4 text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-amber-500">
                     📦 Estimasi Ongkos Kirim
                 </h2>
-                <p class="text-gray-600 text-lg">Cek estimasi biaya pengiriman ke kota Anda dengan ID Express</p>
+                <p class="text-gray-600 text-base md:text-lg px-4">Cek estimasi biaya pengiriman ke kota Anda dengan ID Express</p>
             </div>
 
             <div class="max-w-4xl mx-auto">
                 <!-- Main Calculator Card -->
-                <div class="bg-white rounded-3xl shadow-2xl overflow-hidden border-4 border-orange-200">
-                    <div class="bg-gradient-to-r from-orange-500 to-amber-500 p-8 text-white">
-                        <h3 class="text-2xl font-bold mb-2">🚚 Kalkulator Pengiriman</h3>
-                        <p class="text-orange-100">Pilih tujuan pengiriman Anda</p>
+                <div class="bg-white rounded-2xl md:rounded-3xl shadow-2xl overflow-hidden border-2 md:border-4 border-orange-200">
+                    <div class="bg-gradient-to-r from-orange-500 to-amber-500 p-6 md:p-8 text-white">
+                        <h3 class="text-xl md:text-2xl font-bold mb-2">🚚 Kalkulator Pengiriman</h3>
+                        <p class="text-orange-100 text-sm md:text-base">Pilih tujuan pengiriman Anda</p>
                     </div>
 
-                    <div class="p-8">
+                    <div class="p-4 md:p-8">
                         <!-- Weight Input -->
-                        <div class="mb-6">
-                            <label class="block text-gray-700 font-bold mb-3 text-lg">
+                        <div class="mb-5 md:mb-6">
+                            <label class="block text-gray-700 font-bold mb-2 md:mb-3 text-base md:text-lg">
                                 ⚖️ Berat Paket (kg)
                             </label>
                             <div class="relative">
                                 <input type="number" id="packageWeight" value="1" min="0.5" step="0.5" 
-                                    class="w-full px-6 py-4 border-3 border-orange-300 rounded-xl text-xl font-semibold focus:outline-none focus:ring-4 focus:ring-orange-200 focus:border-orange-500 transition">
-                                <div class="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 font-bold">
+                                    class="w-full px-4 md:px-6 py-3 md:py-4 border-2 md:border-3 border-orange-300 rounded-lg md:rounded-xl text-lg md:text-xl font-semibold focus:outline-none focus:ring-4 focus:ring-orange-200 focus:border-orange-500 transition">
+                                <div class="absolute right-3 md:right-4 top-1/2 transform -translate-y-1/2 text-gray-500 font-bold text-sm md:text-base">
                                     KG
                                 </div>
                             </div>
-                            <div class="flex gap-2 mt-3">
-                                <button onclick="setWeight(1)" class="flex-1 bg-orange-100 hover:bg-orange-200 text-orange-700 font-semibold py-2 px-4 rounded-lg transition">
+                            <div class="grid grid-cols-4 gap-2 mt-3">
+                                <button onclick="setWeight(1)" class="bg-orange-100 hover:bg-orange-200 text-orange-700 font-semibold py-2 px-2 md:px-4 rounded-lg transition text-sm md:text-base">
                                     1 kg
                                 </button>
-                                <button onclick="setWeight(2)" class="flex-1 bg-orange-100 hover:bg-orange-200 text-orange-700 font-semibold py-2 px-4 rounded-lg transition">
+                                <button onclick="setWeight(2)" class="bg-orange-100 hover:bg-orange-200 text-orange-700 font-semibold py-2 px-2 md:px-4 rounded-lg transition text-sm md:text-base">
                                     2 kg
                                 </button>
-                                <button onclick="setWeight(3)" class="flex-1 bg-orange-100 hover:bg-orange-200 text-orange-700 font-semibold py-2 px-4 rounded-lg transition">
+                                <button onclick="setWeight(3)" class="bg-orange-100 hover:bg-orange-200 text-orange-700 font-semibold py-2 px-2 md:px-4 rounded-lg transition text-sm md:text-base">
                                     3 kg
                                 </button>
-                                <button onclick="setWeight(5)" class="flex-1 bg-orange-100 hover:bg-orange-200 text-orange-700 font-semibold py-2 px-4 rounded-lg transition">
+                                <button onclick="setWeight(5)" class="bg-orange-100 hover:bg-orange-200 text-orange-700 font-semibold py-2 px-2 md:px-4 rounded-lg transition text-sm md:text-base">
                                     5 kg
                                 </button>
                             </div>
                         </div>
 
                         <!-- Province Selection -->
-                        <div class="mb-6">
-                            <label class="block text-gray-700 font-bold mb-3 text-lg">
+                        <div class="mb-5 md:mb-6">
+                            <label class="block text-gray-700 font-bold mb-2 md:mb-3 text-base md:text-lg">
                                 🗺️ Pilih Provinsi
                             </label>
                             <select id="provinceSelect" onchange="loadCities()"
-                                class="w-full px-6 py-4 border-3 border-orange-300 rounded-xl text-lg font-semibold focus:outline-none focus:ring-4 focus:ring-orange-200 focus:border-orange-500 transition appearance-none bg-white cursor-pointer">
+                                class="w-full px-4 md:px-6 py-3 md:py-4 border-2 md:border-3 border-orange-300 rounded-lg md:rounded-xl text-base md:text-lg font-semibold focus:outline-none focus:ring-4 focus:ring-orange-200 focus:border-orange-500 transition appearance-none bg-white cursor-pointer">
                                 <option value="">-- Pilih Provinsi --</option>
                             </select>
                         </div>
 
                         <!-- City Selection -->
-                        <div class="mb-6" id="citySelectContainer" style="display: none;">
-                            <label class="block text-gray-700 font-bold mb-3 text-lg">
+                        <div class="mb-5 md:mb-6" id="citySelectContainer" style="display: none;">
+                            <label class="block text-gray-700 font-bold mb-2 md:mb-3 text-base md:text-lg">
                                 🏙️ Pilih Kota/Kabupaten
                             </label>
                             <select id="citySelect" 
-                                class="w-full px-6 py-4 border-3 border-orange-300 rounded-xl text-lg font-semibold focus:outline-none focus:ring-4 focus:ring-orange-200 focus:border-orange-500 transition appearance-none bg-white cursor-pointer">
+                                class="w-full px-4 md:px-6 py-3 md:py-4 border-2 md:border-3 border-orange-300 rounded-lg md:rounded-xl text-base md:text-lg font-semibold focus:outline-none focus:ring-4 focus:ring-orange-200 focus:border-orange-500 transition appearance-none bg-white cursor-pointer">
                                 <option value="">-- Pilih Kota/Kabupaten --</option>
                             </select>
                         </div>
 
                         <!-- Calculate Button -->
                         <button onclick="calculateShipping()" 
-                            class="w-full bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-bold py-5 px-8 rounded-xl text-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition duration-300">
+                            class="w-full bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-bold py-4 md:py-5 px-6 md:px-8 rounded-xl text-lg md:text-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition duration-300">
                             💰 Hitung Ongkos Kirim
                         </button>
 
                         <!-- Result Display -->
-                        <div id="resultDisplay" class="mt-8 hidden">
-                            <div class="bg-gradient-to-r from-green-50 to-emerald-50 rounded-2xl p-8 border-3 border-green-300">
+                        <div id="resultDisplay" class="mt-6 md:mt-8 hidden">
+                            <div class="bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl md:rounded-2xl p-6 md:p-8 border-2 md:border-3 border-green-300">
                                 <div class="text-center mb-4">
-                                    <div class="text-6xl mb-3">✅</div>
-                                    <h4 class="text-2xl font-bold text-gray-800 mb-2">Estimasi Biaya Pengiriman</h4>
+                                    <div class="text-5xl md:text-6xl mb-3">✅</div>
+                                    <h4 class="text-xl md:text-2xl font-bold text-gray-800 mb-2">Estimasi Biaya Pengiriman</h4>
                                 </div>
                                 
-                                <div class="bg-white rounded-xl p-6 mb-4 shadow-md">
+                                <div class="bg-white rounded-lg md:rounded-xl p-4 md:p-6 mb-4 shadow-md">
                                     <div class="flex items-center justify-between mb-3 pb-3 border-b-2 border-gray-200">
-                                        <span class="text-gray-600 font-semibold">📍 Tujuan:</span>
-                                        <span class="text-gray-800 font-bold" id="destination"></span>
+                                        <span class="text-gray-600 font-semibold text-sm md:text-base">📍 Tujuan:</span>
+                                        <span class="text-gray-800 font-bold text-sm md:text-base text-right" id="destination"></span>
                                     </div>
                                     <div class="flex items-center justify-between mb-3 pb-3 border-b-2 border-gray-200">
-                                        <span class="text-gray-600 font-semibold">⚖️ Berat:</span>
-                                        <span class="text-gray-800 font-bold" id="weightDisplay"></span>
+                                        <span class="text-gray-600 font-semibold text-sm md:text-base">⚖️ Berat:</span>
+                                        <span class="text-gray-800 font-bold text-sm md:text-base" id="weightDisplay"></span>
                                     </div>
                                     <div class="flex items-center justify-between mb-3 pb-3 border-b-2 border-gray-200">
-                                        <span class="text-gray-600 font-semibold">⏱️ Estimasi:</span>
-                                        <span class="text-gray-800 font-bold" id="estimate"></span>
+                                        <span class="text-gray-600 font-semibold text-sm md:text-base">⏱️ Estimasi:</span>
+                                        <span class="text-gray-800 font-bold text-sm md:text-base" id="estimate"></span>
                                     </div>
                                     <div class="flex items-center justify-between pt-2">
-                                        <span class="text-gray-800 font-bold text-xl">💵 Total Ongkir:</span>
-                                        <span class="text-green-600 font-bold text-3xl" id="shippingCost"></span>
+                                        <span class="text-gray-800 font-bold text-base md:text-xl">💵 Total Ongkir:</span>
+                                        <span class="text-green-600 font-bold text-2xl md:text-3xl" id="shippingCost"></span>
                                     </div>
                                 </div>
 
-                                <div class="bg-yellow-50 rounded-xl p-4 border-2 border-yellow-300">
-                                    <p class="text-sm text-gray-600 text-center">
+                                <div class="bg-yellow-50 rounded-lg md:rounded-xl p-3 md:p-4 border-2 border-yellow-300">
+                                    <p class="text-xs md:text-sm text-gray-600 text-center">
                                         ℹ️ <strong>Catatan:</strong> Estimasi biaya dapat berubah sesuai kondisi aktual
                                     </p>
                                 </div>
 
                                 <button onclick="orderViaWhatsApp()" 
-                                    class="w-full mt-4 bg-green-500 hover:bg-green-600 text-white font-bold py-4 px-6 rounded-xl text-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition duration-300 flex items-center justify-center gap-3">
-                                    <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 24 24">
+                                    class="w-full mt-4 bg-green-500 hover:bg-green-600 text-white font-bold py-3 md:py-4 px-4 md:px-6 rounded-xl text-base md:text-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition duration-300 flex items-center justify-center gap-2 md:gap-3">
+                                    <svg class="w-6 h-6 md:w-7 md:h-7" fill="currentColor" viewBox="0 0 24 24">
                                         <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
                                     </svg>
                                     Pesan via WhatsApp
@@ -971,21 +982,21 @@
                 </div>
 
                 <!-- Info Cards -->
-                <div class="grid md:grid-cols-3 gap-6 mt-8">
-                    <div class="bg-white rounded-2xl p-6 shadow-lg border-2 border-orange-200 hover:shadow-xl transition transform hover:-translate-y-1">
-                        <div class="text-4xl mb-3 text-center">🚚</div>
-                        <h4 class="font-bold text-lg text-gray-800 mb-2 text-center">Pengiriman Cepat</h4>
-                        <p class="text-gray-600 text-center text-sm">Paket sampai dengan aman dan cepat ke seluruh Indonesia</p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mt-6 md:mt-8 px-2 md:px-0">
+                    <div class="bg-white rounded-xl md:rounded-2xl p-5 md:p-6 shadow-lg border-2 border-orange-200 hover:shadow-xl transition transform hover:-translate-y-1">
+                        <div class="text-3xl md:text-4xl mb-2 md:mb-3 text-center">🚚</div>
+                        <h4 class="font-bold text-base md:text-lg text-gray-800 mb-2 text-center">Pengiriman Cepat</h4>
+                        <p class="text-gray-600 text-center text-xs md:text-sm">Paket sampai dengan aman dan cepat ke seluruh Indonesia</p>
                     </div>
-                    <div class="bg-white rounded-2xl p-6 shadow-lg border-2 border-orange-200 hover:shadow-xl transition transform hover:-translate-y-1">
-                        <div class="text-4xl mb-3 text-center">📦</div>
-                        <h4 class="font-bold text-lg text-gray-800 mb-2 text-center">Packing Aman</h4>
-                        <p class="text-gray-600 text-center text-sm">Produk dikemas dengan standar keamanan tinggi</p>
+                    <div class="bg-white rounded-xl md:rounded-2xl p-5 md:p-6 shadow-lg border-2 border-orange-200 hover:shadow-xl transition transform hover:-translate-y-1">
+                        <div class="text-3xl md:text-4xl mb-2 md:mb-3 text-center">📦</div>
+                        <h4 class="font-bold text-base md:text-lg text-gray-800 mb-2 text-center">Packing Aman</h4>
+                        <p class="text-gray-600 text-center text-xs md:text-sm">Produk dikemas dengan standar keamanan tinggi</p>
                     </div>
-                    <div class="bg-white rounded-2xl p-6 shadow-lg border-2 border-orange-200 hover:shadow-xl transition transform hover:-translate-y-1">
-                        <div class="text-4xl mb-3 text-center">💯</div>
-                        <h4 class="font-bold text-lg text-gray-800 mb-2 text-center">Terpercaya</h4>
-                        <p class="text-gray-600 text-center text-sm">Dipercaya ribuan pelanggan di seluruh Indonesia</p>
+                    <div class="bg-white rounded-xl md:rounded-2xl p-5 md:p-6 shadow-lg border-2 border-orange-200 hover:shadow-xl transition transform hover:-translate-y-1">
+                        <div class="text-3xl md:text-4xl mb-2 md:mb-3 text-center">💯</div>
+                        <h4 class="font-bold text-base md:text-lg text-gray-800 mb-2 text-center">Terpercaya</h4>
+                        <p class="text-gray-600 text-center text-xs md:text-sm">Dipercaya ribuan pelanggan di seluruh Indonesia</p>
                     </div>
                 </div>
             </div>
@@ -1068,7 +1079,7 @@
         ];
 
         const defaultBranches = [
-            { id: 1, name: 'Kantor Pusat', address: 'Depan Polres Tulungagung, Tulungagung', phone: '0897-5839-564', hours: '08:00 - 21:00' },
+            { id: 1, name: 'Cabang Tulungagung Pusat', address: 'Depan Polres Tulungagung, Tulungagung', phone: '0897-5839-564', hours: '08:00 - 21:00' },
             { id: 2, name: 'Cabang Utama Malang', address: 'Perum Oma View Atas Blok GG-31 Jl. Band. Abd Saleh Cemorokandang, Malang', phone: '0821-4278-1715', hours: '08:00 - 21:00' }
         ];
 
@@ -1514,6 +1525,11 @@
             }
 
             updateCart();
+            
+            // Auto show cart on desktop (kiri bawah)
+            if (window.innerWidth >= 768) {
+                document.getElementById('floatingCart').classList.remove('hidden');
+            }
         }
 
         function updateQty(productId, delta) {
@@ -1530,13 +1546,19 @@
         function updateCart() {
             const cartContainer = document.getElementById('cartItems');
             const floatingCart = document.getElementById('floatingCart');
+            const mobileCartToggle = document.getElementById('mobileCartToggle');
+            const mobileCartBadge = document.getElementById('mobileCartBadge');
             
             if (cart.length === 0) {
                 floatingCart.classList.add('hidden');
+                mobileCartToggle.classList.add('hidden');
                 return;
             }
 
-            floatingCart.classList.remove('hidden');
+            // Show mobile cart toggle button on mobile
+            mobileCartToggle.classList.remove('hidden');
+            mobileCartBadge.textContent = cart.length;
+            
             document.getElementById('cartCount').textContent = cart.length;
 
             let subtotal = 0;
@@ -1547,17 +1569,17 @@
                 subtotal += item.price * item.qty;
                 totalQuantity += item.qty;
                 cartContainer.innerHTML += `
-                    <div class="flex items-center justify-between bg-orange-50 p-3 rounded-lg">
-                        <div class="flex-1">
-                            <p class="font-semibold text-gray-800">${item.name}</p>
-                            <p class="text-sm text-gray-600">Rp ${item.price.toLocaleString('id-ID')}</p>
+                    <div class="flex items-center justify-between bg-orange-50 p-2 md:p-3 rounded-lg">
+                        <div class="flex-1 min-w-0">
+                            <p class="font-semibold text-gray-800 text-sm md:text-base truncate">${item.name}</p>
+                            <p class="text-xs md:text-sm text-gray-600">Rp ${item.price.toLocaleString('id-ID')}</p>
                         </div>
-                        <div class="flex items-center gap-2">
-                            <button onclick="updateQty(${item.id}, -1)" class="w-8 h-8 bg-white rounded-full font-bold text-orange-500 hover:bg-orange-100">
+                        <div class="flex items-center gap-1 md:gap-2 ml-2">
+                            <button onclick="updateQty(${item.id}, -1)" class="w-7 h-7 md:w-8 md:h-8 bg-white rounded-full font-bold text-orange-500 hover:bg-orange-100 text-sm md:text-base flex items-center justify-center">
                                 -
                             </button>
-                            <span class="w-8 text-center font-bold">${item.qty}</span>
-                            <button onclick="updateQty(${item.id}, 1)" class="w-8 h-8 bg-white rounded-full font-bold text-orange-500 hover:bg-orange-100">
+                            <span class="w-6 md:w-8 text-center font-bold text-sm md:text-base">${item.qty}</span>
+                            <button onclick="updateQty(${item.id}, 1)" class="w-7 h-7 md:w-8 md:h-8 bg-white rounded-full font-bold text-orange-500 hover:bg-orange-100 text-sm md:text-base flex items-center justify-center">
                                 +
                             </button>
                         </div>
@@ -1579,6 +1601,19 @@
                 document.getElementById('cartShippingCost').textContent = 'Rp 0';
                 document.getElementById('cartTotal').textContent = 'Rp ' + subtotal.toLocaleString('id-ID');
             }
+        }
+        
+        function toggleCart() {
+            const floatingCart = document.getElementById('floatingCart');
+            if (floatingCart.classList.contains('hidden')) {
+                floatingCart.classList.remove('hidden');
+            } else {
+                floatingCart.classList.add('hidden');
+            }
+        }
+        
+        function closeCart() {
+            document.getElementById('floatingCart').classList.add('hidden');
         }
 
         function sendWhatsAppOrder() {
