@@ -778,23 +778,219 @@
     </div>
 
     <!-- Floating Cart -->
-    <div id="floatingCart" class="hidden fixed bottom-6 right-6 bg-white rounded-2xl shadow-2xl p-6 max-w-md w-full mx-4 border-2 border-orange-200 z-40">
+    <div id="floatingCart" class="hidden fixed bottom-6 right-6 bg-white rounded-2xl shadow-2xl p-6 max-w-md w-full mx-4 border-2 border-orange-200 z-40 max-h-[85vh] overflow-y-auto">
         <div class="flex items-center justify-between mb-4">
             <h3 class="text-xl font-bold text-gray-800 flex items-center gap-2">
                 🛒 Keranjang (<span id="cartCount">0</span>)
             </h3>
         </div>
-        <div id="cartItems" class="max-h-60 overflow-y-auto mb-4 space-y-3"></div>
+        
+        <!-- Cart Items -->
+        <div id="cartItems" class="max-h-48 overflow-y-auto mb-4 space-y-3"></div>
+        
+        <!-- Shipping Address Selection -->
         <div class="border-t-2 border-orange-200 pt-4 mb-4">
-            <div class="flex justify-between items-center text-xl font-bold">
-                <span>Total:</span>
-                <span class="text-orange-600" id="cartTotal">Rp 0</span>
+            <h4 class="font-bold text-gray-700 mb-3 flex items-center gap-2">
+                📍 Alamat Pengiriman
+            </h4>
+            
+            <!-- Province Selection -->
+            <div class="mb-3">
+                <label class="block text-sm font-semibold text-gray-600 mb-2">Provinsi</label>
+                <select id="cartProvinceSelect" onchange="loadCartCities()"
+                    class="w-full px-3 py-2 border-2 border-orange-300 rounded-lg text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-orange-200 focus:border-orange-500 transition">
+                    <option value="">-- Pilih Provinsi --</option>
+                </select>
+            </div>
+            
+            <!-- City Selection -->
+            <div class="mb-3" id="cartCityContainer" style="display: none;">
+                <label class="block text-sm font-semibold text-gray-600 mb-2">Kota/Kabupaten</label>
+                <select id="cartCitySelect" onchange="updateCartWithShipping()"
+                    class="w-full px-3 py-2 border-2 border-orange-300 rounded-lg text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-orange-200 focus:border-orange-500 transition">
+                    <option value="">-- Pilih Kota --</option>
+                </select>
+            </div>
+            
+            <!-- Shipping Info Display -->
+            <div id="shippingInfo" class="hidden mt-3 bg-green-50 border-2 border-green-300 rounded-lg p-3">
+                <div class="flex items-center justify-between text-sm mb-2">
+                    <span class="text-gray-600">📦 Berat Total:</span>
+                    <span class="font-bold text-gray-800" id="totalWeightDisplay">0 kg</span>
+                </div>
+                <div class="flex items-center justify-between text-sm">
+                    <span class="text-gray-600">⏱️ Estimasi:</span>
+                    <span class="font-bold text-gray-800" id="estimateDisplay">-</span>
+                </div>
             </div>
         </div>
+        
+        <!-- Price Summary -->
+        <div class="border-t-2 border-orange-200 pt-4 mb-4 space-y-3">
+            <div class="flex justify-between items-center text-base">
+                <span class="text-gray-700">Harga Produk:</span>
+                <span class="font-bold text-gray-800" id="cartSubtotal">Rp 0</span>
+            </div>
+            
+            <div class="flex justify-between items-center text-base">
+                <span class="text-gray-700">Ongkos Kirim:</span>
+                <span class="font-bold text-orange-600" id="cartShippingCost">Rp 0</span>
+            </div>
+            
+            <div class="border-t-2 border-orange-300 pt-3">
+                <div class="flex justify-between items-center text-xl">
+                    <span class="font-bold text-gray-800">Total Bayar:</span>
+                    <span class="font-bold text-green-600" id="cartTotal">Rp 0</span>
+                </div>
+            </div>
+        </div>
+        
         <button onclick="sendWhatsAppOrder()" class="w-full bg-gradient-to-r from-green-500 to-green-600 text-white py-4 rounded-xl font-bold text-lg hover:from-green-600 hover:to-green-700 transition-all duration-300 flex items-center justify-center gap-3 shadow-lg">
             📱 Pesan via WhatsApp
         </button>
     </div>
+
+    <!-- Kalkulator Ongkos Kirim -->
+    <section class="py-20 bg-gradient-to-br from-orange-50 via-white to-amber-50 mt-20">
+        <div class="container mx-auto px-6 max-w-7xl">
+            <div class="text-center mb-12 animate-fade-in">
+                <h2 class="text-4xl md:text-5xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-amber-500">
+                    📦 Estimasi Ongkos Kirim
+                </h2>
+                <p class="text-gray-600 text-lg">Cek estimasi biaya pengiriman ke kota Anda dengan ID Express</p>
+            </div>
+
+            <div class="max-w-4xl mx-auto">
+                <!-- Main Calculator Card -->
+                <div class="bg-white rounded-3xl shadow-2xl overflow-hidden border-4 border-orange-200">
+                    <div class="bg-gradient-to-r from-orange-500 to-amber-500 p-8 text-white">
+                        <h3 class="text-2xl font-bold mb-2">🚚 Kalkulator Pengiriman</h3>
+                        <p class="text-orange-100">Pilih tujuan pengiriman Anda</p>
+                    </div>
+
+                    <div class="p-8">
+                        <!-- Weight Input -->
+                        <div class="mb-6">
+                            <label class="block text-gray-700 font-bold mb-3 text-lg">
+                                ⚖️ Berat Paket (kg)
+                            </label>
+                            <div class="relative">
+                                <input type="number" id="packageWeight" value="1" min="0.5" step="0.5" 
+                                    class="w-full px-6 py-4 border-3 border-orange-300 rounded-xl text-xl font-semibold focus:outline-none focus:ring-4 focus:ring-orange-200 focus:border-orange-500 transition">
+                                <div class="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 font-bold">
+                                    KG
+                                </div>
+                            </div>
+                            <div class="flex gap-2 mt-3">
+                                <button onclick="setWeight(1)" class="flex-1 bg-orange-100 hover:bg-orange-200 text-orange-700 font-semibold py-2 px-4 rounded-lg transition">
+                                    1 kg
+                                </button>
+                                <button onclick="setWeight(2)" class="flex-1 bg-orange-100 hover:bg-orange-200 text-orange-700 font-semibold py-2 px-4 rounded-lg transition">
+                                    2 kg
+                                </button>
+                                <button onclick="setWeight(3)" class="flex-1 bg-orange-100 hover:bg-orange-200 text-orange-700 font-semibold py-2 px-4 rounded-lg transition">
+                                    3 kg
+                                </button>
+                                <button onclick="setWeight(5)" class="flex-1 bg-orange-100 hover:bg-orange-200 text-orange-700 font-semibold py-2 px-4 rounded-lg transition">
+                                    5 kg
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Province Selection -->
+                        <div class="mb-6">
+                            <label class="block text-gray-700 font-bold mb-3 text-lg">
+                                🗺️ Pilih Provinsi
+                            </label>
+                            <select id="provinceSelect" onchange="loadCities()"
+                                class="w-full px-6 py-4 border-3 border-orange-300 rounded-xl text-lg font-semibold focus:outline-none focus:ring-4 focus:ring-orange-200 focus:border-orange-500 transition appearance-none bg-white cursor-pointer">
+                                <option value="">-- Pilih Provinsi --</option>
+                            </select>
+                        </div>
+
+                        <!-- City Selection -->
+                        <div class="mb-6" id="citySelectContainer" style="display: none;">
+                            <label class="block text-gray-700 font-bold mb-3 text-lg">
+                                🏙️ Pilih Kota/Kabupaten
+                            </label>
+                            <select id="citySelect" 
+                                class="w-full px-6 py-4 border-3 border-orange-300 rounded-xl text-lg font-semibold focus:outline-none focus:ring-4 focus:ring-orange-200 focus:border-orange-500 transition appearance-none bg-white cursor-pointer">
+                                <option value="">-- Pilih Kota/Kabupaten --</option>
+                            </select>
+                        </div>
+
+                        <!-- Calculate Button -->
+                        <button onclick="calculateShipping()" 
+                            class="w-full bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-bold py-5 px-8 rounded-xl text-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition duration-300">
+                            💰 Hitung Ongkos Kirim
+                        </button>
+
+                        <!-- Result Display -->
+                        <div id="resultDisplay" class="mt-8 hidden">
+                            <div class="bg-gradient-to-r from-green-50 to-emerald-50 rounded-2xl p-8 border-3 border-green-300">
+                                <div class="text-center mb-4">
+                                    <div class="text-6xl mb-3">✅</div>
+                                    <h4 class="text-2xl font-bold text-gray-800 mb-2">Estimasi Biaya Pengiriman</h4>
+                                </div>
+                                
+                                <div class="bg-white rounded-xl p-6 mb-4 shadow-md">
+                                    <div class="flex items-center justify-between mb-3 pb-3 border-b-2 border-gray-200">
+                                        <span class="text-gray-600 font-semibold">📍 Tujuan:</span>
+                                        <span class="text-gray-800 font-bold" id="destination"></span>
+                                    </div>
+                                    <div class="flex items-center justify-between mb-3 pb-3 border-b-2 border-gray-200">
+                                        <span class="text-gray-600 font-semibold">⚖️ Berat:</span>
+                                        <span class="text-gray-800 font-bold" id="weightDisplay"></span>
+                                    </div>
+                                    <div class="flex items-center justify-between mb-3 pb-3 border-b-2 border-gray-200">
+                                        <span class="text-gray-600 font-semibold">⏱️ Estimasi:</span>
+                                        <span class="text-gray-800 font-bold" id="estimate"></span>
+                                    </div>
+                                    <div class="flex items-center justify-between pt-2">
+                                        <span class="text-gray-800 font-bold text-xl">💵 Total Ongkir:</span>
+                                        <span class="text-green-600 font-bold text-3xl" id="shippingCost"></span>
+                                    </div>
+                                </div>
+
+                                <div class="bg-yellow-50 rounded-xl p-4 border-2 border-yellow-300">
+                                    <p class="text-sm text-gray-600 text-center">
+                                        ℹ️ <strong>Catatan:</strong> Estimasi biaya dapat berubah sesuai kondisi aktual
+                                    </p>
+                                </div>
+
+                                <button onclick="orderViaWhatsApp()" 
+                                    class="w-full mt-4 bg-green-500 hover:bg-green-600 text-white font-bold py-4 px-6 rounded-xl text-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition duration-300 flex items-center justify-center gap-3">
+                                    <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+                                    </svg>
+                                    Pesan via WhatsApp
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Info Cards -->
+                <div class="grid md:grid-cols-3 gap-6 mt-8">
+                    <div class="bg-white rounded-2xl p-6 shadow-lg border-2 border-orange-200 hover:shadow-xl transition transform hover:-translate-y-1">
+                        <div class="text-4xl mb-3 text-center">🚚</div>
+                        <h4 class="font-bold text-lg text-gray-800 mb-2 text-center">Pengiriman Cepat</h4>
+                        <p class="text-gray-600 text-center text-sm">Paket sampai dengan aman dan cepat ke seluruh Indonesia</p>
+                    </div>
+                    <div class="bg-white rounded-2xl p-6 shadow-lg border-2 border-orange-200 hover:shadow-xl transition transform hover:-translate-y-1">
+                        <div class="text-4xl mb-3 text-center">📦</div>
+                        <h4 class="font-bold text-lg text-gray-800 mb-2 text-center">Packing Aman</h4>
+                        <p class="text-gray-600 text-center text-sm">Produk dikemas dengan standar keamanan tinggi</p>
+                    </div>
+                    <div class="bg-white rounded-2xl p-6 shadow-lg border-2 border-orange-200 hover:shadow-xl transition transform hover:-translate-y-1">
+                        <div class="text-4xl mb-3 text-center">💯</div>
+                        <h4 class="font-bold text-lg text-gray-800 mb-2 text-center">Terpercaya</h4>
+                        <p class="text-gray-600 text-center text-sm">Dipercaya ribuan pelanggan di seluruh Indonesia</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
     <!-- Footer -->
     <footer class="bg-gradient-to-r from-gray-800 to-gray-900 text-white py-12 mt-20">
@@ -855,6 +1051,13 @@
         let currentEditBranch = null;
         let isAddingNew = false;
         
+        // Cart shipping variables
+        let cartSelectedProvince = '';
+        let cartSelectedCity = '';
+        let cartShippingCost = 0;
+        let cartTotalWeight = 0;
+        const WEIGHT_PER_PACK = 0.5; // 500 gram per bungkus
+        
         const defaultProducts = [
             { id: 1, name: 'Tahu Bakso Original', price: 35000, image: 'https://sugeng-smalabum.github.io/TASO_JUWARA/TASO ORI.jpeg', description: 'Tahu lembut diisi bakso pilihan dengan bumbu rahasia', category: 'signature' },
             { id: 2, name: 'Tahu Bakso Mercon', price: 45000, image: 'https://sugeng-smalabum.github.io/TASO_JUWARA/TASO MERCON.jpeg', description: 'Sensasi pedas menggigit untuk pecinta kuliner pedas', category: 'signature' },
@@ -865,7 +1068,7 @@
         ];
 
         const defaultBranches = [
-            { id: 1, name: 'Cabang Tulungagung Pusat', address: 'Depan Polres Tulungagung, Tulungagung', phone: '0897-5839-564', hours: '08:00 - 21:00' },
+            { id: 1, name: 'Kantor Pusat', address: 'Depan Polres Tulungagung, Tulungagung', phone: '0897-5839-564', hours: '08:00 - 21:00' },
             { id: 2, name: 'Cabang Utama Malang', address: 'Perum Oma View Atas Blok GG-31 Jl. Band. Abd Saleh Cemorokandang, Malang', phone: '0821-4278-1715', hours: '08:00 - 21:00' }
         ];
 
@@ -986,6 +1189,8 @@
             updateBusinessInfo();
             updateCart();
             initSlider(); // Initialize slider
+            initShippingCalculator(); // Initialize shipping calculator
+            initCartShipping(); // Initialize cart shipping dropdown
         }
 
         // Admin Functions
@@ -1334,11 +1539,13 @@
             floatingCart.classList.remove('hidden');
             document.getElementById('cartCount').textContent = cart.length;
 
-            let total = 0;
+            let subtotal = 0;
+            let totalQuantity = 0;
             cartContainer.innerHTML = '';
 
             cart.forEach(item => {
-                total += item.price * item.qty;
+                subtotal += item.price * item.qty;
+                totalQuantity += item.qty;
                 cartContainer.innerHTML += `
                     <div class="flex items-center justify-between bg-orange-50 p-3 rounded-lg">
                         <div class="flex-1">
@@ -1358,7 +1565,20 @@
                 `;
             });
 
-            document.getElementById('cartTotal').textContent = 'Rp ' + total.toLocaleString('id-ID');
+            // Calculate total weight (500g per pack)
+            cartTotalWeight = totalQuantity * WEIGHT_PER_PACK;
+            
+            // Update subtotal
+            document.getElementById('cartSubtotal').textContent = 'Rp ' + subtotal.toLocaleString('id-ID');
+            
+            // Update shipping info if city is selected
+            if (cartSelectedProvince && cartSelectedCity) {
+                updateCartWithShipping();
+            } else {
+                // No shipping selected yet
+                document.getElementById('cartShippingCost').textContent = 'Rp 0';
+                document.getElementById('cartTotal').textContent = 'Rp ' + subtotal.toLocaleString('id-ID');
+            }
         }
 
         function sendWhatsAppOrder() {
@@ -1366,17 +1586,38 @@
                 alert('Keranjang masih kosong!');
                 return;
             }
+            
+            if (!cartSelectedProvince || !cartSelectedCity) {
+                alert('⚠️ Mohon pilih alamat pengiriman terlebih dahulu!');
+                return;
+            }
 
             let message = '*PESANAN BARU - Tahu Bakso JUWARA*%0A%0A';
-            let total = 0;
+            message += '*📦 Detail Pesanan:*%0A';
+            
+            let subtotal = 0;
 
             cart.forEach(item => {
                 const itemTotal = item.price * item.qty;
-                total += itemTotal;
-                message += `• ${item.name}%0A  ${item.qty}x @ Rp ${item.price.toLocaleString('id-ID')} = Rp ${itemTotal.toLocaleString('id-ID')}%0A%0A`;
+                subtotal += itemTotal;
+                message += `• ${item.name}%0A  ${item.qty}x @ Rp ${item.price.toLocaleString('id-ID')} = Rp ${itemTotal.toLocaleString('id-ID')}%0A`;
             });
 
-            message += `*Total: Rp ${total.toLocaleString('id-ID')}*%0A%0A`;
+            message += '%0A━━━━━━━━━━━━━━━━%0A';
+            message += '*📍 Alamat Pengiriman:*%0A';
+            message += `${cartSelectedCity}, ${cartSelectedProvince}%0A%0A`;
+            
+            message += '*💰 Rincian Biaya:*%0A';
+            message += `Harga Produk: Rp ${subtotal.toLocaleString('id-ID')}%0A`;
+            message += `Ongkos Kirim: Rp ${cartShippingCost.toLocaleString('id-ID')}%0A`;
+            message += `Berat Total: ${cartTotalWeight.toFixed(1)} kg%0A`;
+            
+            const cityData = shippingRates[cartSelectedProvince][cartSelectedCity];
+            message += `Estimasi: ${cityData.estimate}%0A`;
+            message += '%0A━━━━━━━━━━━━━━━━%0A';
+            
+            const grandTotal = subtotal + cartShippingCost;
+            message += `*TOTAL BAYAR: Rp ${grandTotal.toLocaleString('id-ID')}*%0A%0A`;
             message += 'Terima kasih! 🙏';
 
             window.open(`https://wa.me/6282142781714?text=${message}`, '_blank');
@@ -1627,6 +1868,303 @@
                 });
             }
         });
+
+        
+        // ============================================
+        // CART SHIPPING FUNCTIONS
+        // ============================================
+        
+        function initCartShipping() {
+            const provinceSelect = document.getElementById('cartProvinceSelect');
+            
+            // Populate provinces in cart
+            Object.keys(shippingRates).sort().forEach(province => {
+                const option = document.createElement('option');
+                option.value = province;
+                option.textContent = province;
+                provinceSelect.appendChild(option);
+            });
+        }
+        
+        function loadCartCities() {
+            const provinceSelect = document.getElementById('cartProvinceSelect');
+            const citySelect = document.getElementById('cartCitySelect');
+            const cityContainer = document.getElementById('cartCityContainer');
+            
+            cartSelectedProvince = provinceSelect.value;
+            
+            if (!cartSelectedProvince) {
+                cityContainer.style.display = 'none';
+                document.getElementById('shippingInfo').classList.add('hidden');
+                cartShippingCost = 0;
+                updateCart();
+                return;
+            }
+            
+            // Clear previous cities
+            citySelect.innerHTML = '<option value="">-- Pilih Kota --</option>';
+            
+            // Load cities for selected province
+            const cities = shippingRates[cartSelectedProvince];
+            Object.keys(cities).sort().forEach(city => {
+                const option = document.createElement('option');
+                option.value = city;
+                option.textContent = city;
+                citySelect.appendChild(option);
+            });
+            
+            cityContainer.style.display = 'block';
+            cartSelectedCity = '';
+            cartShippingCost = 0;
+            document.getElementById('shippingInfo').classList.add('hidden');
+            updateCart();
+        }
+        
+        function updateCartWithShipping() {
+            const citySelect = document.getElementById('cartCitySelect');
+            cartSelectedCity = citySelect.value;
+            
+            if (!cartSelectedProvince || !cartSelectedCity || cart.length === 0) {
+                document.getElementById('shippingInfo').classList.add('hidden');
+                cartShippingCost = 0;
+                updateCart();
+                return;
+            }
+            
+            // Calculate shipping cost
+            const cityData = shippingRates[cartSelectedProvince][cartSelectedCity];
+            cartShippingCost = cityData.baseCost + (cityData.perKg * cartTotalWeight);
+            
+            // Calculate subtotal
+            let subtotal = 0;
+            cart.forEach(item => {
+                subtotal += item.price * item.qty;
+            });
+            
+            // Update display
+            document.getElementById('totalWeightDisplay').textContent = cartTotalWeight.toFixed(1) + ' kg';
+            document.getElementById('estimateDisplay').textContent = cityData.estimate;
+            document.getElementById('cartShippingCost').textContent = 'Rp ' + cartShippingCost.toLocaleString('id-ID');
+            
+            const grandTotal = subtotal + cartShippingCost;
+            document.getElementById('cartTotal').textContent = 'Rp ' + grandTotal.toLocaleString('id-ID');
+            
+            document.getElementById('shippingInfo').classList.remove('hidden');
+        }
+        
+        // ============================================
+        // SHIPPING CALCULATOR FUNCTIONS
+        // ============================================
+        
+        // Data tarif ongkir ID Express (dalam Rupiah per kg)
+        const shippingRates = {
+            "Jawa Barat": {
+                "Bandung": { baseCost: 12000, perKg: 3000, estimate: "1-2 hari" },
+                "Bekasi": { baseCost: 15000, perKg: 3500, estimate: "1-2 hari" },
+                "Bogor": { baseCost: 14000, perKg: 3200, estimate: "1-2 hari" },
+                "Cirebon": { baseCost: 18000, perKg: 4000, estimate: "2-3 hari" },
+                "Depok": { baseCost: 15000, perKg: 3500, estimate: "1-2 hari" },
+                "Sukabumi": { baseCost: 16000, perKg: 3800, estimate: "2-3 hari" },
+                "Tasikmalaya": { baseCost: 17000, perKg: 3900, estimate: "2-3 hari" },
+                "Cimahi": { baseCost: 13000, perKg: 3100, estimate: "1-2 hari" }
+            },
+            "Jawa Tengah": {
+                "Semarang": { baseCost: 16000, perKg: 3500, estimate: "2-3 hari" },
+                "Solo": { baseCost: 14000, perKg: 3200, estimate: "2-3 hari" },
+                "Jogjakarta": { baseCost: 15000, perKg: 3400, estimate: "2-3 hari" },
+                "Magelang": { baseCost: 17000, perKg: 3700, estimate: "2-3 hari" },
+                "Purwokerto": { baseCost: 18000, perKg: 4000, estimate: "2-3 hari" },
+                "Tegal": { baseCost: 19000, perKg: 4200, estimate: "2-3 hari" },
+                "Pekalongan": { baseCost: 18000, perKg: 4000, estimate: "2-3 hari" }
+            },
+            "Jawa Timur": {
+                "Surabaya": { baseCost: 13000, perKg: 3000, estimate: "1-2 hari" },
+                "Malang": { baseCost: 12000, perKg: 2800, estimate: "1-2 hari" },
+                "Sidoarjo": { baseCost: 13000, perKg: 3000, estimate: "1-2 hari" },
+                "Gresik": { baseCost: 14000, perKg: 3200, estimate: "1-2 hari" },
+                "Kediri": { baseCost: 11000, perKg: 2600, estimate: "1 hari" },
+                "Blitar": { baseCost: 10000, perKg: 2400, estimate: "1 hari" },
+                "Tulungagung": { baseCost: 8000, perKg: 2000, estimate: "Hari yang sama" },
+                "Mojokerto": { baseCost: 14000, perKg: 3200, estimate: "1-2 hari" },
+                "Pasuruan": { baseCost: 15000, perKg: 3400, estimate: "1-2 hari" },
+                "Probolinggo": { baseCost: 16000, perKg: 3600, estimate: "2-3 hari" },
+                "Jember": { baseCost: 18000, perKg: 4000, estimate: "2-3 hari" },
+                "Banyuwangi": { baseCost: 20000, perKg: 4500, estimate: "3-4 hari" },
+                "Madiun": { baseCost: 13000, perKg: 3000, estimate: "1-2 hari" }
+            },
+            "DKI Jakarta": {
+                "Jakarta Pusat": { baseCost: 16000, perKg: 3600, estimate: "1-2 hari" },
+                "Jakarta Utara": { baseCost: 16000, perKg: 3600, estimate: "1-2 hari" },
+                "Jakarta Selatan": { baseCost: 16000, perKg: 3600, estimate: "1-2 hari" },
+                "Jakarta Barat": { baseCost: 16000, perKg: 3600, estimate: "1-2 hari" },
+                "Jakarta Timur": { baseCost: 16000, perKg: 3600, estimate: "1-2 hari" },
+                "Kepulauan Seribu": { baseCost: 25000, perKg: 6000, estimate: "4-5 hari" }
+            },
+            "Banten": {
+                "Tangerang": { baseCost: 16000, perKg: 3600, estimate: "2-3 hari" },
+                "Tangerang Selatan": { baseCost: 16000, perKg: 3600, estimate: "2-3 hari" },
+                "Serang": { baseCost: 18000, perKg: 4000, estimate: "2-3 hari" },
+                "Cilegon": { baseCost: 19000, perKg: 4200, estimate: "2-3 hari" },
+                "Pandeglang": { baseCost: 20000, perKg: 4500, estimate: "3-4 hari" }
+            },
+            "Bali": {
+                "Denpasar": { baseCost: 22000, perKg: 5000, estimate: "3-4 hari" },
+                "Badung": { baseCost: 22000, perKg: 5000, estimate: "3-4 hari" },
+                "Gianyar": { baseCost: 23000, perKg: 5200, estimate: "3-4 hari" },
+                "Tabanan": { baseCost: 24000, perKg: 5400, estimate: "3-4 hari" },
+                "Singaraja": { baseCost: 25000, perKg: 5600, estimate: "3-4 hari" }
+            },
+            "Sumatera Utara": {
+                "Medan": { baseCost: 28000, perKg: 6500, estimate: "4-5 hari" },
+                "Binjai": { baseCost: 29000, perKg: 6700, estimate: "4-5 hari" },
+                "Pematang Siantar": { baseCost: 30000, perKg: 7000, estimate: "4-5 hari" },
+                "Tebing Tinggi": { baseCost: 30000, perKg: 7000, estimate: "4-5 hari" }
+            },
+            "Sumatera Barat": {
+                "Padang": { baseCost: 30000, perKg: 7000, estimate: "4-5 hari" },
+                "Bukittinggi": { baseCost: 31000, perKg: 7200, estimate: "4-5 hari" },
+                "Payakumbuh": { baseCost: 32000, perKg: 7400, estimate: "5-6 hari" }
+            },
+            "Sumatera Selatan": {
+                "Palembang": { baseCost: 26000, perKg: 6000, estimate: "4-5 hari" },
+                "Prabumulih": { baseCost: 27000, perKg: 6200, estimate: "4-5 hari" },
+                "Lubuklinggau": { baseCost: 28000, perKg: 6500, estimate: "5-6 hari" }
+            },
+            "Lampung": {
+                "Bandar Lampung": { baseCost: 24000, perKg: 5500, estimate: "3-4 hari" },
+                "Metro": { baseCost: 25000, perKg: 5700, estimate: "3-4 hari" }
+            },
+            "Kalimantan Barat": {
+                "Pontianak": { baseCost: 32000, perKg: 7500, estimate: "5-6 hari" },
+                "Singkawang": { baseCost: 33000, perKg: 7700, estimate: "5-6 hari" }
+            },
+            "Kalimantan Selatan": {
+                "Banjarmasin": { baseCost: 30000, perKg: 7000, estimate: "5-6 hari" },
+                "Banjarbaru": { baseCost: 30000, perKg: 7000, estimate: "5-6 hari" }
+            },
+            "Kalimantan Timur": {
+                "Balikpapan": { baseCost: 32000, perKg: 7500, estimate: "5-6 hari" },
+                "Samarinda": { baseCost: 33000, perKg: 7700, estimate: "5-6 hari" },
+                "Bontang": { baseCost: 34000, perKg: 8000, estimate: "5-6 hari" }
+            },
+            "Sulawesi Selatan": {
+                "Makassar": { baseCost: 28000, perKg: 6500, estimate: "4-5 hari" },
+                "Pare-Pare": { baseCost: 29000, perKg: 6700, estimate: "4-5 hari" },
+                "Palopo": { baseCost: 30000, perKg: 7000, estimate: "5-6 hari" }
+            },
+            "Sulawesi Utara": {
+                "Manado": { baseCost: 32000, perKg: 7500, estimate: "5-6 hari" },
+                "Bitung": { baseCost: 33000, perKg: 7700, estimate: "5-6 hari" },
+                "Tomohon": { baseCost: 33000, perKg: 7700, estimate: "5-6 hari" }
+            },
+            "Nusa Tenggara Barat": {
+                "Mataram": { baseCost: 26000, perKg: 6000, estimate: "4-5 hari" },
+                "Bima": { baseCost: 28000, perKg: 6500, estimate: "5-6 hari" }
+            },
+            "Papua": {
+                "Jayapura": { baseCost: 45000, perKg: 10000, estimate: "7-10 hari" },
+                "Sorong": { baseCost: 47000, perKg: 11000, estimate: "7-10 hari" }
+            }
+        };
+        
+        let selectedProvince = '';
+        let selectedCity = '';
+        let selectedCityData = null;
+        
+        // Initialize shipping calculator
+        function initShippingCalculator() {
+            const provinceSelect = document.getElementById('provinceSelect');
+            
+            // Populate provinces
+            Object.keys(shippingRates).sort().forEach(province => {
+                const option = document.createElement('option');
+                option.value = province;
+                option.textContent = province;
+                provinceSelect.appendChild(option);
+            });
+        }
+        
+        function setWeight(weight) {
+            document.getElementById('packageWeight').value = weight;
+        }
+        
+        function loadCities() {
+            const provinceSelect = document.getElementById('provinceSelect');
+            const citySelect = document.getElementById('citySelect');
+            const cityContainer = document.getElementById('citySelectContainer');
+            
+            selectedProvince = provinceSelect.value;
+            
+            if (!selectedProvince) {
+                cityContainer.style.display = 'none';
+                document.getElementById('resultDisplay').classList.add('hidden');
+                return;
+            }
+            
+            // Clear previous cities
+            citySelect.innerHTML = '<option value="">-- Pilih Kota/Kabupaten --</option>';
+            
+            // Load cities for selected province
+            const cities = shippingRates[selectedProvince];
+            Object.keys(cities).sort().forEach(city => {
+                const option = document.createElement('option');
+                option.value = city;
+                option.textContent = city;
+                citySelect.appendChild(option);
+            });
+            
+            cityContainer.style.display = 'block';
+            document.getElementById('resultDisplay').classList.add('hidden');
+        }
+        
+        function calculateShipping() {
+            const weight = parseFloat(document.getElementById('packageWeight').value);
+            const provinceSelect = document.getElementById('provinceSelect');
+            const citySelect = document.getElementById('citySelect');
+            
+            selectedProvince = provinceSelect.value;
+            selectedCity = citySelect.value;
+            
+            if (!selectedProvince || !selectedCity) {
+                alert('⚠️ Mohon pilih provinsi dan kota tujuan terlebih dahulu!');
+                return;
+            }
+            
+            if (weight < 0.5) {
+                alert('⚠️ Berat minimum adalah 0.5 kg');
+                return;
+            }
+            
+            selectedCityData = shippingRates[selectedProvince][selectedCity];
+            const totalCost = selectedCityData.baseCost + (selectedCityData.perKg * weight);
+            
+            // Display result
+            document.getElementById('destination').textContent = `${selectedCity}, ${selectedProvince}`;
+            document.getElementById('weightDisplay').textContent = `${weight} kg`;
+            document.getElementById('estimate').textContent = selectedCityData.estimate;
+            document.getElementById('shippingCost').textContent = `Rp ${totalCost.toLocaleString('id-ID')}`;
+            
+            document.getElementById('resultDisplay').classList.remove('hidden');
+            
+            // Smooth scroll to result
+            document.getElementById('resultDisplay').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+        
+        function orderViaWhatsApp() {
+            const weight = parseFloat(document.getElementById('packageWeight').value);
+            const totalCost = selectedCityData.baseCost + (selectedCityData.perKg * weight);
+            
+            let message = '*PESANAN BARU - Tahu Bakso JUWARA*%0A%0A';
+            message += `📦 *Detail Pengiriman:*%0A`;
+            message += `📍 Tujuan: ${selectedCity}, ${selectedProvince}%0A`;
+            message += `⚖️ Berat: ${weight} kg%0A`;
+            message += `⏱️ Estimasi: ${selectedCityData.estimate}%0A`;
+            message += `💵 Ongkir: Rp ${totalCost.toLocaleString('id-ID')}%0A%0A`;
+            message += `Saya ingin memesan Tahu Bakso JUWARA dengan detail pengiriman di atas.%0A%0A`;
+            message += 'Terima kasih! 🙏';
+            
+            window.open(`https://wa.me/6282142781714?text=${message}`, '_blank');
+        }
 
         // Initialize on load
         window.onload = init;
