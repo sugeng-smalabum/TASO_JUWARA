@@ -19,6 +19,67 @@
         .hover-scale {
             transition: all 0.3s ease;
         }
+        
+        /* Logo Animations */
+        @keyframes logoFloat {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(5deg); }
+        }
+        
+        @keyframes logoGlow {
+            0%, 100% { 
+                filter: drop-shadow(0 0 10px rgba(251, 146, 60, 0.5)) 
+                        drop-shadow(0 0 20px rgba(251, 146, 60, 0.3));
+            }
+            50% { 
+                filter: drop-shadow(0 0 20px rgba(251, 146, 60, 0.8)) 
+                        drop-shadow(0 0 40px rgba(251, 146, 60, 0.5))
+                        drop-shadow(0 0 60px rgba(251, 146, 60, 0.3));
+            }
+        }
+        
+        @keyframes slideInLeft {
+            from { 
+                opacity: 0; 
+                transform: translateX(-100px) rotate(-10deg); 
+            }
+            to { 
+                opacity: 1; 
+                transform: translateX(0) rotate(0deg); 
+            }
+        }
+        
+        .logo-container {
+            animation: slideInLeft 1s ease-out, logoFloat 3s ease-in-out infinite 1s;
+        }
+        
+        .logo-container:hover {
+            animation: logoFloat 0.6s ease-in-out infinite, logoGlow 2s ease-in-out infinite;
+        }
+        
+        @keyframes titleSlideIn {
+            from { 
+                opacity: 0; 
+                transform: translateX(50px); 
+            }
+            to { 
+                opacity: 1; 
+                transform: translateX(0); 
+            }
+        }
+        
+        .title-animated {
+            animation: titleSlideIn 1s ease-out 0.3s both;
+        }
+        
+        /* Header layout improvements */
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
     </style>
 </head>
 <body class="bg-gradient-to-br from-orange-50 via-white to-amber-50">
@@ -160,10 +221,24 @@
                 <button id="editInfoBtn" onclick="openEditInfo()" class="hidden mb-4 bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full text-sm mx-auto">
                     ✏️ Edit Info Bisnis
                 </button>
-                <h1 class="text-5xl md:text-7xl font-bold mb-4 animate-fade-in">
-                    Tahu Bakso <span class="text-yellow-300">JUWARA</span>
-                </h1>
-                <p id="taglineText" class="text-xl md:text-2xl mb-8 text-orange-100">
+                
+                <!-- Logo and Title Container -->
+                <div class="header-content">
+                    <!-- Logo with animations -->
+                    <div class="logo-container">
+                        <img src="logo.jpeg" alt="JUWARA Logo" class="w-32 h-32 md:w-40 md:h-40 object-contain rounded-2xl shadow-2xl bg-white/10 backdrop-blur-sm p-2">
+                    </div>
+                    
+                    <!-- Title -->
+                    <div class="title-animated">
+                        <h1 class="text-5xl md:text-7xl font-bold mb-4">
+                            Tahu Bakso <span class="text-yellow-300">JUWARA</span>
+                        </h1>
+                    </div>
+                </div>
+                
+                <p id="taglineText" class="text-xl md:text-2xl mb-8 text-orange-100 animate-fade-in" style="animation-delay: 0.6s;">
+                    Juara Rasa, Juara Hati - Kuliner Viral Indonesia
                     Juara Rasa, Juara Hati - Kuliner Viral Indonesia
                     Karena ini bukan Bakso rasa Tahu, Tapi Tahu Rasa Bakso Cuy..
                 </p>
