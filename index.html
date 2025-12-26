@@ -80,9 +80,144 @@
             gap: 2rem;
             flex-wrap: wrap;
         }
+        
+        /* WhatsApp Floating Button */
+        @keyframes whatsappPulse {
+            0%, 100% { 
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7);
+            }
+            50% { 
+                transform: scale(1.05);
+                box-shadow: 0 0 0 15px rgba(37, 211, 102, 0);
+            }
+        }
+        
+        @keyframes whatsappBounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        .whatsapp-float {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 100;
+            animation: slideInRight 0.5s ease-out, whatsappPulse 2s infinite;
+        }
+        
+        .whatsapp-float:hover {
+            animation: whatsappBounce 0.5s ease-in-out infinite;
+        }
+        
+        .whatsapp-button {
+            width: 65px;
+            height: 65px;
+            background: #25D366;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 20px rgba(37, 211, 102, 0.4);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .whatsapp-button:hover {
+            transform: scale(1.1);
+            background: #20BA5A;
+            box-shadow: 0 6px 30px rgba(37, 211, 102, 0.6);
+        }
+        
+        .whatsapp-icon {
+            width: 35px;
+            height: 35px;
+            fill: white;
+        }
+        
+        .whatsapp-tooltip {
+            position: absolute;
+            right: 80px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: white;
+            padding: 12px 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s ease;
+        }
+        
+        .whatsapp-float:hover .whatsapp-tooltip {
+            opacity: 1;
+            right: 85px;
+        }
+        
+        .whatsapp-tooltip::after {
+            content: '';
+            position: absolute;
+            right: -8px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 0;
+            height: 0;
+            border-left: 8px solid white;
+            border-top: 8px solid transparent;
+            border-bottom: 8px solid transparent;
+        }
+        
+        @media (max-width: 640px) {
+            .whatsapp-float {
+                bottom: 20px;
+                right: 20px;
+            }
+            
+            .whatsapp-button {
+                width: 60px;
+                height: 60px;
+            }
+            
+            .whatsapp-icon {
+                width: 32px;
+                height: 32px;
+            }
+            
+            .whatsapp-tooltip {
+                display: none;
+            }
+        }
     </style>
 </head>
 <body class="bg-gradient-to-br from-orange-50 via-white to-amber-50">
+    
+    <!-- WhatsApp Floating Button -->
+    <div class="whatsapp-float">
+        <div class="whatsapp-tooltip">
+            <p class="text-sm font-semibold text-gray-800">💬 Chat dengan Admin</p>
+            <p class="text-xs text-gray-600 mt-1">Klik untuk WhatsApp</p>
+        </div>
+        <a href="https://wa.me/6282142781714?text=Halo%20Admin%20Tahu%20Bakso%20JUWARA!%20Saya%20ingin%20bertanya%20tentang%20produk%20Anda" 
+           target="_blank" 
+           class="whatsapp-button"
+           aria-label="Chat WhatsApp">
+            <svg class="whatsapp-icon" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+                <path fill="currentColor" d="M16 0C7.164 0 0 7.164 0 16c0 2.828.736 5.484 2.024 7.792L0 32l8.416-2.196A15.904 15.904 0 0016 32c8.836 0 16-7.164 16-16S24.836 0 16 0zm8.148 22.528c-.352.992-2.084 1.864-2.876 1.976-.752.112-1.724.16-2.78-.172-.64-.2-1.46-.464-2.512-.912-4.408-1.876-7.288-6.288-7.508-6.576-.22-.288-1.796-2.388-1.796-4.556s1.136-3.232 1.54-3.672c.404-.44.884-.552 1.176-.552.292 0 .584.004.84.016.272.012.636-.104.996.76.368.884 1.252 3.056 1.364 3.276.112.22.188.48.04.768-.148.288-.22.468-.44.72-.22.252-.464.564-.664.756-.22.22-.448.456-.192.896.256.44 1.14 1.88 2.448 3.044 1.684 1.496 3.104 1.964 3.544 2.184.44.22.696.184.952-.112.256-.296 1.096-1.276 1.388-1.716.292-.44.584-.368.984-.22.4.148 2.544 1.2 2.984 1.42.44.22.732.332.84.516.108.184.108 1.06-.244 2.052z"/>
+            </svg>
+        </a>
+    </div>
     
     <!-- Admin Button -->
     <button onclick="toggleAdmin()" id="adminBtn" class="fixed top-4 right-4 z-50 bg-gray-800 text-white p-3 rounded-full shadow-lg hover:bg-gray-700 transition-all">
