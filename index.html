@@ -199,6 +199,258 @@
                 display: none;
             }
         }
+        
+        /* ============================================ */
+        /* INTERACTIVE SLIDER STYLES */
+        /* ============================================ */
+        
+        .gallery-slider {
+            position: relative;
+            width: 100%;
+            overflow: hidden;
+            background: linear-gradient(135deg, rgba(251, 146, 60, 0.1) 0%, rgba(245, 158, 11, 0.1) 100%);
+            border-radius: 24px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        }
+        
+        .slider-container {
+            display: flex;
+            transition: transform 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            position: relative;
+        }
+        
+        .slider-item {
+            min-width: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .slider-item img,
+        .slider-item video {
+            width: 100%;
+            height: 500px;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.6s ease;
+        }
+        
+        .slider-item:hover img,
+        .slider-item:hover video {
+            transform: scale(1.05);
+        }
+        
+        /* Overlay gradient untuk readability */
+        .slider-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 50%, transparent 100%);
+            padding: 30px;
+            color: white;
+        }
+        
+        .slider-caption {
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            animation: fadeInUp 0.8s ease;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Navigation Arrows */
+        .slider-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .slider-arrow:hover {
+            background: rgba(251, 146, 60, 0.95);
+            transform: translateY(-50%) scale(1.1);
+            box-shadow: 0 6px 20px rgba(251, 146, 60, 0.4);
+        }
+        
+        .slider-arrow:hover svg {
+            stroke: white;
+        }
+        
+        .slider-arrow.prev {
+            left: 20px;
+        }
+        
+        .slider-arrow.next {
+            right: 20px;
+        }
+        
+        .slider-arrow svg {
+            width: 24px;
+            height: 24px;
+            stroke: #ea580c;
+            stroke-width: 3;
+            transition: stroke 0.3s ease;
+        }
+        
+        /* Dots Navigation */
+        .slider-dots {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            z-index: 10;
+        }
+        
+        .slider-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        
+        .slider-dot.active {
+            background: #fb923c;
+            width: 35px;
+            border-radius: 6px;
+            border-color: white;
+        }
+        
+        .slider-dot:hover {
+            background: rgba(251, 146, 60, 0.8);
+            transform: scale(1.2);
+        }
+        
+        /* Play/Pause Button */
+        .slider-control {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .slider-control:hover {
+            background: rgba(251, 146, 60, 0.95);
+            transform: scale(1.1);
+        }
+        
+        .slider-control svg {
+            width: 20px;
+            height: 20px;
+            fill: #ea580c;
+            transition: fill 0.3s ease;
+        }
+        
+        .slider-control:hover svg {
+            fill: white;
+        }
+        
+        /* Admin Edit Button for Slider */
+        .slider-admin-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #ea580c;
+            cursor: pointer;
+            z-index: 10;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .slider-admin-btn:hover {
+            background: rgba(251, 146, 60, 0.95);
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        /* Counter */
+        .slider-counter {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            padding: 8px 16px;
+            border-radius: 20px;
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+            z-index: 10;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .slider-item img,
+            .slider-item video {
+                height: 350px;
+            }
+            
+            .slider-arrow {
+                width: 40px;
+                height: 40px;
+            }
+            
+            .slider-arrow.prev {
+                left: 10px;
+            }
+            
+            .slider-arrow.next {
+                right: 10px;
+            }
+            
+            .slider-caption {
+                font-size: 1.2rem;
+            }
+            
+            .slider-overlay {
+                padding: 20px;
+            }
+        }
     </style>
 </head>
 <body class="bg-gradient-to-br from-orange-50 via-white to-amber-50">
@@ -396,6 +648,90 @@
         <div class="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-orange-50"></div>
     </div>
 
+    <!-- ============================================ -->
+    <!-- INTERACTIVE GALLERY SLIDER -->
+    <!-- ============================================ -->
+    <div class="max-w-7xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
+        <div class="text-center mb-8">
+            <h2 class="text-4xl font-bold text-gray-800 mb-3">📸 Galeri Dokumentasi</h2>
+            <p class="text-gray-600">Lihat keseruan dan kelezatan Tahu Bakso JUWARA</p>
+        </div>
+        
+        <div class="gallery-slider">
+            <!-- Admin Edit Button (only visible when logged in) -->
+            <button id="editSliderBtn" onclick="openSliderManager()" class="slider-admin-btn hidden">
+                ✏️ Kelola Galeri
+            </button>
+            
+            <!-- Counter -->
+            <div class="slider-counter">
+                <span id="currentSlide">1</span> / <span id="totalSlides">0</span>
+            </div>
+            
+            <!-- Play/Pause Button -->
+            <button class="slider-control" onclick="toggleAutoPlay()" id="playPauseBtn" aria-label="Play/Pause">
+                <svg id="pauseIcon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="6" y="4" width="4" height="16"></rect>
+                    <rect x="14" y="4" width="4" height="16"></rect>
+                </svg>
+                <svg id="playIcon" class="hidden" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                </svg>
+            </button>
+            
+            <!-- Slider Container -->
+            <div class="slider-container" id="sliderContainer">
+                <!-- Slides will be dynamically generated here -->
+            </div>
+            
+            <!-- Navigation Arrows -->
+            <button class="slider-arrow prev" onclick="prevSlide()" aria-label="Previous">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M15 18L9 12L15 6" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </button>
+            <button class="slider-arrow next" onclick="nextSlide()" aria-label="Next">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M9 18L15 12L9 6" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </button>
+            
+            <!-- Dots Navigation -->
+            <div class="slider-dots" id="sliderDots">
+                <!-- Dots will be dynamically generated here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Slider Manager Modal -->
+    <div id="sliderManagerModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 overflow-y-auto">
+        <div class="bg-white rounded-2xl p-8 max-w-4xl w-full my-8 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold">🖼️ Kelola Galeri Slider</h2>
+                <button onclick="closeSliderManager()" class="text-gray-500 hover:text-gray-700 text-2xl">✕</button>
+            </div>
+            
+            <div class="mb-6 p-4 bg-blue-50 rounded-lg">
+                <p class="text-sm font-semibold text-gray-700 mb-2">ℹ️ Panduan:</p>
+                <ul class="text-xs text-gray-600 space-y-1">
+                    <li>• Gunakan URL gambar atau video dari hosting online</li>
+                    <li>• Format yang didukung: JPG, PNG, GIF, MP4, WEBM</li>
+                    <li>• Rekomendasi ukuran gambar: 1920x1080px untuk hasil terbaik</li>
+                    <li>• Slider akan bergerak otomatis setiap 5 detik</li>
+                </ul>
+            </div>
+            
+            <div id="sliderItemsList" class="space-y-4 mb-6">
+                <!-- Slider items will be listed here -->
+            </div>
+            
+            <button onclick="addNewSliderItem()" class="w-full bg-green-500 text-white py-3 rounded-lg font-semibold hover:bg-green-600 flex items-center justify-center gap-2">
+                <span>➕</span>
+                <span>Tambah Media Baru</span>
+            </button>
+        </div>
+    </div>
+
     <!-- Main Content -->
     <div class="max-w-7xl mx-auto px-4 py-16 sm:px-6 lg:px-8">
         
@@ -540,6 +876,106 @@
             description: 'Kuliner terbaik dengan cita rasa juara untuk keluarga Indonesia'
         };
 
+        // ============================================
+        // SLIDER DATA - BAGIAN UNTUK MENAMBAH/MENGHAPUS MEDIA
+        // ============================================
+        // PANDUAN PENGGUNAAN:
+        // 1. Untuk menambah foto/video baru: tambahkan object baru ke array defaultSliderItems
+        // 2. Untuk menghapus: hapus object yang tidak diinginkan
+        // 3. Format object:
+        //    { 
+        //      id: [angka unik], 
+        //      type: 'image' atau 'video', 
+        //      url: '[URL media]', 
+        //      caption: '[Deskripsi]' 
+        //    }
+        // 4. BATAS MAKSIMAL: Disarankan max 15-20 item untuk performa optimal
+        
+        const defaultSliderItems = [
+            // CONTOH GAMBAR - Ganti URL dengan gambar Anda
+            { 
+                id: 1, 
+                type: 'image', 
+                url: 'https://sugeng-smalabum.github.io/TASO_JUWARA/TASO ORI.jpeg', 
+                caption: '🍽️ Tahu Bakso JUWARA - Kelezatan Tiada Tara' 
+            },
+            { 
+                id: 2, 
+                type: 'image', 
+                url: 'https://sugeng-smalabum.github.io/TASO_JUWARA/TASO MERCON.jpeg', 
+                caption: '👨‍🍳 Dimasak dengan Cinta dan Keahlian' 
+            },
+            { 
+                id: 3, 
+                type: 'image', 
+                url: 'https://sugeng-smalabum.github.io/TASO_JUWARA/TASO NORI.jpeg', 
+                caption: '😋 Menu Favorit Keluarga Indonesia' 
+            },
+            { 
+                id: 4, 
+                type: 'image', 
+                url: 'https://sugeng-smalabum.github.io/TASO_JUWARA/TASO ABON.jpeg', 
+                caption: '🎉 Acara Spesial? Tahu Bakso JUWARA Solusinya!' 
+            },
+            { 
+                id: 5, 
+                type: 'image', 
+                url: 'https://sugeng-smalabum.github.io/TASO_JUWARA/TASO KEJU.jpeg', 
+                caption: '🌟 Bahan Premium, Rasa Istimewa' 
+            }
+            
+            // TAMBAHKAN MEDIA BARU DI BAWAH INI
+            // Contoh menambah gambar baru:
+            // { id: 6, type: 'image', url: 'https://example.com/foto.jpg', caption: 'Deskripsi foto' },
+            
+            // Contoh menambah video:
+            // { id: 7, type: 'video', url: 'https://example.com/video.mp4', caption: 'Deskripsi video' },
+            
+            // CATATAN: Pastikan setiap ID unik (tidak ada yang sama)
+            { 
+                id: 6, 
+                type: 'image', 
+                url: 'https://sugeng-smalabum.github.io/TASO_JUWARA/TASO MIX.jpeg', 
+                caption: '🌟 All in One dalam SATU Bungkus, Praktis dan Ekonomis' 
+            }
+            { 
+                id: 7, 
+                type: 'image', 
+                url: 'https://sugeng-smalabum.github.io/TASO_JUWARA/TASO PIC1.jpeg', 
+                caption: '🌟 Ini Teh Tahu Rasa Bakso, Bukan Bakso rasa TAHU' 
+            }
+            { 
+                id: 8, 
+                type: 'image', 
+                url: 'https://sugeng-smalabum.github.io/TASO_JUWARA/TASO PIC2.jpeg', 
+                caption: '🌟 Satu gigitan yang akan memberikan kebahagiaan dalam Keluarga' 
+            }
+            { 
+                id: 9, 
+                type: 'image', 
+                url: 'https://sugeng-smalabum.github.io/TASO_JUWARA/TASO PIC3.jpeg', 
+                caption: '🌟 Tahu Bakso memang Banyak, Tapi yang ini CUMA 1 sedunia' 
+            }
+            { 
+                id: 10, 
+                type: 'image', 
+                url: 'https://sugeng-smalabum.github.io/TASO_JUWARA/TASO PIC4.jpeg', 
+                caption: '🌟 Cobain dan akan terus mencoba karena ada Rasa dan Cinta dalam Setiap gigitan' 
+            }
+            { 
+                id: 11, 
+                type: 'image', 
+                url: 'https://sugeng-smalabum.github.io/TASO_JUWARA/TASO PIC5.jpeg', 
+                caption: '🌟 Kami selalu berusaha yang Terbaik untuk anda dan Keluarga Tercinta Anda' 
+            }
+        ];
+        
+        // Slider Variables
+        let sliderItems = JSON.parse(localStorage.getItem('tahu-bakso-slider')) || defaultSliderItems;
+        let currentSlideIndex = 0;
+        let sliderAutoPlay = true;
+        let sliderInterval = null;
+
         let products = JSON.parse(localStorage.getItem('tahu-bakso-products')) || defaultProducts;
         let branches = JSON.parse(localStorage.getItem('tahu-bakso-branches')) || defaultBranches;
         let businessInfo = JSON.parse(localStorage.getItem('tahu-bakso-info')) || defaultBusinessInfo;
@@ -550,6 +986,7 @@
             renderBranches();
             updateBusinessInfo();
             updateCart();
+            initSlider(); // Initialize slider
         }
 
         // Admin Functions
@@ -614,6 +1051,7 @@
             document.getElementById('addProductBtn1').classList.remove('hidden');
             document.getElementById('addProductBtn2').classList.remove('hidden');
             document.getElementById('addBranchBtn').classList.remove('hidden');
+            document.getElementById('editSliderBtn').classList.remove('hidden');
         }
 
         function hideAdminButtons() {
@@ -621,6 +1059,7 @@
             document.getElementById('addProductBtn1').classList.add('hidden');
             document.getElementById('addProductBtn2').classList.add('hidden');
             document.getElementById('addBranchBtn').classList.add('hidden');
+            document.getElementById('editSliderBtn').classList.add('hidden');
         }
 
         // Business Info Functions
@@ -943,6 +1382,252 @@
 
             window.open(`https://wa.me/6282142781714?text=${message}`, '_blank');
         }
+
+        // ============================================
+        // SLIDER FUNCTIONS
+        // ============================================
+        
+        function initSlider() {
+            if (sliderItems.length === 0) {
+                sliderItems = defaultSliderItems;
+                localStorage.setItem('tahu-bakso-slider', JSON.stringify(sliderItems));
+            }
+            renderSlider();
+            startAutoPlay();
+        }
+        
+        function renderSlider() {
+            const container = document.getElementById('sliderContainer');
+            const dotsContainer = document.getElementById('sliderDots');
+            
+            // Clear existing content
+            container.innerHTML = '';
+            dotsContainer.innerHTML = '';
+            
+            // Update counter
+            document.getElementById('totalSlides').textContent = sliderItems.length;
+            document.getElementById('currentSlide').textContent = currentSlideIndex + 1;
+            
+            // Render slides
+            sliderItems.forEach((item, index) => {
+                const slideDiv = document.createElement('div');
+                slideDiv.className = 'slider-item';
+                
+                if (item.type === 'video') {
+                    slideDiv.innerHTML = `
+                        <video autoplay loop muted playsinline>
+                            <source src="${item.url}" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                        <div class="slider-overlay">
+                            <p class="slider-caption">${item.caption}</p>
+                        </div>
+                    `;
+                } else {
+                    slideDiv.innerHTML = `
+                        <img src="${item.url}" alt="${item.caption}" loading="lazy">
+                        <div class="slider-overlay">
+                            <p class="slider-caption">${item.caption}</p>
+                        </div>
+                    `;
+                }
+                
+                container.appendChild(slideDiv);
+                
+                // Create dot
+                const dot = document.createElement('div');
+                dot.className = 'slider-dot' + (index === currentSlideIndex ? ' active' : '');
+                dot.onclick = () => goToSlide(index);
+                dotsContainer.appendChild(dot);
+            });
+            
+            updateSliderPosition();
+        }
+        
+        function updateSliderPosition() {
+            const container = document.getElementById('sliderContainer');
+            container.style.transform = `translateX(-${currentSlideIndex * 100}%)`;
+            
+            // Update dots
+            document.querySelectorAll('.slider-dot').forEach((dot, index) => {
+                dot.classList.toggle('active', index === currentSlideIndex);
+            });
+            
+            // Update counter
+            document.getElementById('currentSlide').textContent = currentSlideIndex + 1;
+        }
+        
+        function nextSlide() {
+            currentSlideIndex = (currentSlideIndex + 1) % sliderItems.length;
+            updateSliderPosition();
+        }
+        
+        function prevSlide() {
+            currentSlideIndex = (currentSlideIndex - 1 + sliderItems.length) % sliderItems.length;
+            updateSliderPosition();
+        }
+        
+        function goToSlide(index) {
+            currentSlideIndex = index;
+            updateSliderPosition();
+        }
+        
+        function startAutoPlay() {
+            if (sliderAutoPlay && sliderItems.length > 1) {
+                sliderInterval = setInterval(nextSlide, 5000); // Change slide every 5 seconds
+            }
+        }
+        
+        function stopAutoPlay() {
+            if (sliderInterval) {
+                clearInterval(sliderInterval);
+                sliderInterval = null;
+            }
+        }
+        
+        function toggleAutoPlay() {
+            sliderAutoPlay = !sliderAutoPlay;
+            
+            const pauseIcon = document.getElementById('pauseIcon');
+            const playIcon = document.getElementById('playIcon');
+            
+            if (sliderAutoPlay) {
+                pauseIcon.classList.remove('hidden');
+                playIcon.classList.add('hidden');
+                startAutoPlay();
+            } else {
+                pauseIcon.classList.add('hidden');
+                playIcon.classList.remove('hidden');
+                stopAutoPlay();
+            }
+        }
+        
+        // Slider Manager Functions
+        function openSliderManager() {
+            renderSliderManager();
+            document.getElementById('sliderManagerModal').classList.remove('hidden');
+        }
+        
+        function closeSliderManager() {
+            document.getElementById('sliderManagerModal').classList.add('hidden');
+        }
+        
+        function renderSliderManager() {
+            const container = document.getElementById('sliderItemsList');
+            container.innerHTML = '';
+            
+            sliderItems.forEach((item, index) => {
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'bg-gray-50 rounded-lg p-4 border-2 border-gray-200';
+                itemDiv.innerHTML = `
+                    <div class="flex gap-4">
+                        <div class="flex-shrink-0">
+                            ${item.type === 'video' ? 
+                                `<video src="${item.url}" class="w-32 h-20 object-cover rounded-lg"></video>` :
+                                `<img src="${item.url}" alt="" class="w-32 h-20 object-cover rounded-lg">`
+                            }
+                        </div>
+                        <div class="flex-1">
+                            <div class="mb-2">
+                                <label class="block text-xs font-semibold text-gray-600 mb-1">Tipe</label>
+                                <select onchange="updateSliderItemType(${index}, this.value)" class="px-3 py-1 border border-gray-300 rounded text-sm">
+                                    <option value="image" ${item.type === 'image' ? 'selected' : ''}>Gambar</option>
+                                    <option value="video" ${item.type === 'video' ? 'selected' : ''}>Video</option>
+                                </select>
+                            </div>
+                            <div class="mb-2">
+                                <label class="block text-xs font-semibold text-gray-600 mb-1">URL Media</label>
+                                <input type="text" value="${item.url}" 
+                                       onchange="updateSliderItemUrl(${index}, this.value)"
+                                       class="w-full px-3 py-1 border border-gray-300 rounded text-sm">
+                            </div>
+                            <div class="mb-2">
+                                <label class="block text-xs font-semibold text-gray-600 mb-1">Caption</label>
+                                <input type="text" value="${item.caption}" 
+                                       onchange="updateSliderItemCaption(${index}, this.value)"
+                                       class="w-full px-3 py-1 border border-gray-300 rounded text-sm">
+                            </div>
+                        </div>
+                        <div class="flex-shrink-0">
+                            <button onclick="deleteSliderItem(${index})" 
+                                    class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 text-sm">
+                                🗑️ Hapus
+                            </button>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(itemDiv);
+            });
+        }
+        
+        function addNewSliderItem() {
+            const newId = Math.max(...sliderItems.map(item => item.id), 0) + 1;
+            const newItem = {
+                id: newId,
+                type: 'image',
+                url: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=1920&h=1080&fit=crop',
+                caption: 'Media Baru - Edit URL dan Caption'
+            };
+            
+            sliderItems.push(newItem);
+            localStorage.setItem('tahu-bakso-slider', JSON.stringify(sliderItems));
+            renderSliderManager();
+            renderSlider();
+        }
+        
+        function updateSliderItemType(index, type) {
+            sliderItems[index].type = type;
+            localStorage.setItem('tahu-bakso-slider', JSON.stringify(sliderItems));
+            renderSliderManager();
+            renderSlider();
+        }
+        
+        function updateSliderItemUrl(index, url) {
+            sliderItems[index].url = url;
+            localStorage.setItem('tahu-bakso-slider', JSON.stringify(sliderItems));
+            renderSlider();
+        }
+        
+        function updateSliderItemCaption(index, caption) {
+            sliderItems[index].caption = caption;
+            localStorage.setItem('tahu-bakso-slider', JSON.stringify(sliderItems));
+            renderSlider();
+        }
+        
+        function deleteSliderItem(index) {
+            if (confirm('Yakin ingin menghapus media ini dari slider?')) {
+                sliderItems.splice(index, 1);
+                localStorage.setItem('tahu-bakso-slider', JSON.stringify(sliderItems));
+                
+                // Adjust current slide index if needed
+                if (currentSlideIndex >= sliderItems.length) {
+                    currentSlideIndex = Math.max(0, sliderItems.length - 1);
+                }
+                
+                renderSliderManager();
+                renderSlider();
+            }
+        }
+        
+        // Keyboard navigation for slider
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') {
+                prevSlide();
+            } else if (e.key === 'ArrowRight') {
+                nextSlide();
+            }
+        });
+        
+        // Pause autoplay when user hovers over slider
+        document.addEventListener('DOMContentLoaded', () => {
+            const slider = document.querySelector('.gallery-slider');
+            if (slider) {
+                slider.addEventListener('mouseenter', stopAutoPlay);
+                slider.addEventListener('mouseleave', () => {
+                    if (sliderAutoPlay) startAutoPlay();
+                });
+            }
+        });
 
         // Initialize on load
         window.onload = init;
