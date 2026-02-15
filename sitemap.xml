@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  
+  <!-- Halaman Utama -->
+  <url>
+    <loc>https://sugeng-smalabum.github.io/TASO_JUWARA/</loc>
+    <lastmod>2025-02-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  
+  <!-- Tambahkan halaman lain jika ada -->
+  <!-- Contoh jika punya halaman about.html:
+  <url>
+    <loc>https://sugeng-smalabum.github.io/TASO_JUWARA/about.html</loc>
+    <lastmod>2025-02-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  -->
+  
+  <!-- Contoh jika punya halaman kontak.html:
+  <url>
+    <loc>https://sugeng-smalabum.github.io/TASO_JUWARA/kontak.html</loc>
+    <lastmod>2025-02-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  -->
+
+</urlset>
