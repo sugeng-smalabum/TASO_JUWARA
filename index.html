@@ -1214,7 +1214,7 @@
         ];
 
         const defaultBranches = [
-            { id: 1, name: 'Tulungagung Pusat', address: 'Depan Polres Tulungagung, Tulungagung', phone: '0897-5839-564', hours: '08:00 - 21:00' },
+            { id: 1, name: 'Kantor Pusat Tulungagung', address: 'Depan Polres Tulungagung, Tulungagung', phone: '0897-5839-564', hours: '08:00 - 21:00' },
             { id: 2, name: 'Cabang Utama Malang', address: 'Perum Oma View Atas Blok GG-31 Jl. Band. Abd Saleh Cemorokandang, Malang', phone: '0821-4278-1715', hours: '08:00 - 21:00' }
         ];
 
@@ -1223,6 +1223,18 @@
             rating: '5.0/5',
             description: 'Kuliner terbaik dengan cita rasa juara untuk keluarga Indonesia'
         };
+
+        // ============================================
+        // AUTO RESET - Hapus cache lama otomatis jika versi berubah
+        // ============================================
+        const DATA_VERSION = document.lastModified || '20022026'; // Otomatis pakai tanggal file, tidak perlu diubah manual!
+        if (localStorage.getItem('tahu-bakso-version') !== DATA_VERSION) {
+            localStorage.removeItem('tahu-bakso-products');
+            localStorage.removeItem('tahu-bakso-branches');
+            localStorage.removeItem('tahu-bakso-info');
+            localStorage.removeItem('tahu-bakso-slider');
+            localStorage.setItem('tahu-bakso-version', DATA_VERSION);
+        }
 
         // ============================================
         // SLIDER DATA - BAGIAN UNTUK MENAMBAH/MENGHAPUS MEDIA
